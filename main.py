@@ -32,6 +32,7 @@ Window.clearcolor = (0/255, 1/255, 26/255, 1)
 history=[]
 currentchatid=None
 currentmodel="llama3.1:8b"
+urlt=""
 
 class Overlay(ButtonBehavior,Widget):
     def __init__(self,**kwargs):
@@ -52,7 +53,7 @@ class Sidebar(ScrollView):
         self.layout=BoxLayout(
             orientation="vertical",
             size_hint=(1,None),
-            spacing=20
+            spacing=25
         )
         self.layout.bind(minimum_height=self.layout.setter("height"))
 
@@ -84,7 +85,7 @@ class aianswer(Thread):
     def run(self):
         try:
             response=requests.post(
-                "http://127.0.0.1:11434/api/chat",
+                urlt,
                 json={
                     "model":currentmodel,
                     "messages":[
@@ -203,7 +204,7 @@ class screen(FloatLayout):
             font_name="cambriab.ttf",
             font_size=50
         )
-        modelswi=BoxLayout(orientation="vertical",spacing=15,size_hint=(0.9,None),height=800)
+        modelswi=BoxLayout(orientation="vertical",spacing=20,size_hint=(0.9,None),height=800)
         with modelswi.canvas.before:
             Color(0.5,0.5,0.5,1)
             modelswi.border=Line(rounded_rectangle=(0,0,0,0,20),width=1.5)
@@ -246,6 +247,15 @@ class screen(FloatLayout):
                 modellabel.text=(f"Choose th LLM model ( current: {currentmodel} )")
             btn.bind(state=updatecolor)
             modelswi.add_widget(btn)
+        def onchanged(instance,value):
+            global urlt
+            urlt=value
+        urltextbar=TextInput(hint_text="Enter the URL...",background_color=(0,0,0,0),size_hint=(1,None),font_name="cambriab.ttf",font_size=64,foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],x=modelsettings.x,y=modelsettings.y+40)
+        urltextbar.bind(text=onchanged)
+        urltextbar.bind(
+            size=lambda instance, value:
+            setattr(instance, "text_size", (instance.width - 20, instance.height))
+        )
         roleplayp=Button(
             text="Role play",
             size_hint=(1, None),
@@ -336,6 +346,7 @@ class screen(FloatLayout):
         )
         sidebar.layout.add_widget(modelsettings)
         sidebar.layout.add_widget(modelswi)
+        sidebar.layout.add_widget(urltextbar)
         sidebar.layout.add_widget(roleplayp)
         sidebar.layout.add_widget(cchl)
         conn=sqlite3.connect("database.db")
