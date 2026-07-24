@@ -421,7 +421,7 @@ class screen(FloatLayout):
             showtoast("New Chat Opened")
         newcb.bind(on_press=newchattt)
         x=0
-        label=Label(text="Welcome...have a good conversation",color=(255/255,255/255,255/255,1),font_size=60,font_name="georgia.ttf")
+        label=Label(text="Welcome...How can I help u?",color=(255/255,255/255,255/255,1),font_size=60,font_name="georgia.ttf")
         messages.add_widget(label)
         textcontainer=FloatLayout(size_hint=(1,None),height=140)
         with textcontainer.canvas.before:
