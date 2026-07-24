@@ -156,12 +156,12 @@ class screen(FloatLayout):
         super().__init__(**kwargs)  
         main=GridLayout(rows=3) 
         self.add_widget(main)
-        header=BoxLayout(size_hint_y=None,height=100)
+        header=BoxLayout(size_hint_y=None,height=200)
         with header.canvas.after:
             Color(0.4,0.4,0.4,1)
             header.line=Line()
         messages=BoxLayout()
-        bottom=BoxLayout(size_hint_y=None,height=100,orientation="horizontal",padding=10,spacing=10)
+        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=10,spacing=10)
         main.add_widget(header)
         main.add_widget(messages)
         main.add_widget(bottom)
@@ -172,7 +172,7 @@ class screen(FloatLayout):
         background_normal="",
         background_disabled_normal="",
         background_color=(0,0,0,0))
-        sideimage=Image(source="side2.png",size_hint=(None,None),size=(70, 70),allow_stretch=True,keep_ratio=True,pos=sidebb.pos)
+        sideimage=Image(source="side2.png",size_hint=(None,None),size=(140, 140),allow_stretch=True,keep_ratio=True,pos=sidebb.pos)
         sidebb.add_widget(sideimage)
         header.add_widget(sidebb)
         overlay=Overlay()
@@ -182,7 +182,7 @@ class screen(FloatLayout):
             popup = Popup(
                 title='',
                 content=Label(text=message,font_size=24),
-                size_hint=(0.4, 0.1),
+                size_hint=(0.5, 0.2),
                 pos_hint={'center_x': 0.5, 'y': 0.05},
                 background_color=(0.2, 0.2, 0.2, 0.9),
                 auto_dismiss=False
@@ -201,16 +201,16 @@ class screen(FloatLayout):
             valign="middle",
             text_size=(0, None),
             font_name="cambriab.ttf",
-            font_size=32
+            font_size=50
         )
-        modelswi=BoxLayout(orientation="vertical",spacing=15,size_hint=(0.7,None),height=400)
+        modelswi=BoxLayout(orientation="vertical",spacing=15,size_hint=(0.9,None),height=800)
         with modelswi.canvas.before:
             Color(0.5,0.5,0.5,1)
             modelswi.border=Line(rounded_rectangle=(0,0,0,0,20),width=1.5)
             Color(30/255,42/255,86/255,0.8)
             modelswi.bg=RoundedRectangle(radius=[20])
         print(modelswi.pos,modelswi.size)
-        modellabel=Label(text=(f"Choose th LLM model ( current: {currentmodel} )"),markup=True,font_size=24,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(0,None),font_name="cambriab.ttf")
+        modellabel=Label(text=(f"Choose th LLM model ( current: {currentmodel} )"),markup=True,font_size=56,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(0,None),font_name="cambriab.ttf")
         modellabel.bind(
             size=lambda instance, value:
             setattr(instance, "text_size", (instance.width - 40, instance.height))
@@ -223,7 +223,7 @@ class screen(FloatLayout):
                 group='my_group',
                 size_hint=(1, None),
                 height=50,
-                font_size=18,
+                font_size=46,
                 background_normal='',
                 background_down="",
                 text_size=(0,None),
@@ -258,7 +258,7 @@ class screen(FloatLayout):
             valign="middle",
             text_size=(0, None),
             font_name="cambriab.ttf",
-            font_size=32,
+            font_size=64,
             x=modelsettings.x,
             y=modelsettings.y+40
         )
@@ -299,7 +299,7 @@ class screen(FloatLayout):
             for i in range(0,messcount):
                 texttt=messlist[i]
                 if i%2==0:
-                    messagebubble=Label(text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=24,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+                    messagebubble=Label(text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=56,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
                     def refpress(message,instance,ref):
                         if ref=="copy":
                             Clipboard.copy(texttt)
@@ -309,7 +309,7 @@ class screen(FloatLayout):
                     messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     history.append(f"user:{messlist[i]}")
                 else:
-                    self.answerl=Label(markup=True,font_size=24,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+                    self.answerl=Label(markup=True,font_size=56,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
                     self.layout.add_widget(self.answerl)
                     self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     self.answerl.text=f"Carrot:\n{texttt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
@@ -328,7 +328,7 @@ class screen(FloatLayout):
             valign="middle",
             text_size=(0, None),
             font_name="cambriab.ttf",
-            font_size=32,
+            font_size=64,
         )
         cchl.bind(
             size=lambda instance, value:
@@ -362,7 +362,7 @@ class screen(FloatLayout):
             valign="middle",
             text_size=(500, None),
             font_name="cambriab.ttf",
-            font_size=28,
+            font_size=56,
             markup=True)
             ###chatb.bind(
             ###    size=lambda instance, value:
@@ -389,13 +389,13 @@ class screen(FloatLayout):
             self.add_widget(sidebar)
             Animation(x=0,d=0.5,t="out_quart").start(sidebar)
         sidebb.bind(on_press=showsb)
-        logo=Label(text="PF-Carrot",color=(255/255,69/255,0/255,1),font_size=64,font_name="timesbd.ttf",bold=True)
+        logo=Label(text="PF-Carrot",color=(255/255,69/255,0/255,1),font_size=110,font_name="timesbd.ttf",bold=True)
         header.add_widget(logo)
-        newcb=Button(text="",size_hint=(None,None),width=70,height=90,
+        newcb=Button(text="",size_hint=(None,None),width=140,height=180,
         background_normal="",
         background_disabled_normal="",
         background_color=(0,0,0,0))
-        newci=Image(source="newchat.png",size_hint=(None,None),size=(60, 60),allow_stretch=True,keep_ratio=True,pos=newcb.pos)
+        newci=Image(source="newchat.png",size_hint=(None,None),size=(120, 120),allow_stretch=True,keep_ratio=True,pos=newcb.pos)
         newcb.add_widget(newci)
         header.add_widget(newcb)
         def newchattt(instance):
@@ -410,7 +410,7 @@ class screen(FloatLayout):
             showtoast("new chat opened")
         newcb.bind(on_press=newchattt)
         x=0
-        label=Label(text="Welcome...have a good conversation",color=(255/255,255/255,255/255,1),font_size=44,font_name="georgia.ttf")
+        label=Label(text="Welcome...have a good conversation",color=(255/255,255/255,255/255,1),font_size=64,font_name="georgia.ttf")
         messages.add_widget(label)
         textcontainer=FloatLayout(size_hint=(1,None),height=70)
         with textcontainer.canvas.before:
@@ -443,7 +443,7 @@ class screen(FloatLayout):
             print(textbar.text)
             message=textbar.text
             right=AnchorLayout(anchor_x="right",anchor_y="center")
-            messagebubble=Label(text=(f"You:\n{textbar.text}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=24,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+            messagebubble=Label(text=(f"You:\n{textbar.text}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=56,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
             def refpress(message,instance,ref):
                 if ref=="copy":
                     Clipboard.copy(message)
@@ -453,7 +453,7 @@ class screen(FloatLayout):
             messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             textbar.text=""
             global history
-            self.answerl=Label(markup=True,font_size=24,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+            self.answerl=Label(markup=True,font_size=56,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
             self.layout.add_widget(self.answerl)
             self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             self.dots=0
@@ -464,11 +464,11 @@ class screen(FloatLayout):
                     self.dots=0
             self.event=Clock.schedule_interval(thinking,0.3)
             aianswer(message,history,exctractm).start()
-        send=Button(size_hint=(None,None),width=70,height=70,
+        send=Button(size_hint=(None,None),width=140,height=140,
         background_normal="",
         background_disabled_normal="",
         background_color=(0,0,0,0))
-        sendimage=Image(source="send.png",size_hint=(None,None),size=(70, 70),allow_stretch=True,keep_ratio=True,pos=send.pos)
+        sendimage=Image(source="send.png",size_hint=(None,None),size=(140, 140),allow_stretch=True,keep_ratio=True,pos=send.pos)
         send.add_widget(sendimage)
         bottom.add_widget(textcontainer)
         bottom.add_widget(send)
