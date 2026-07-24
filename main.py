@@ -53,7 +53,7 @@ class Sidebar(ScrollView):
         self.layout=BoxLayout(
             orientation="vertical",
             size_hint=(1,None),
-            spacing=25
+            spacing=50
         )
         self.layout.bind(minimum_height=self.layout.setter("height"))
 
@@ -169,7 +169,7 @@ class screen(FloatLayout):
         with bottom.canvas.after:
             Color(0.4,0.4,0.4,1)
             bottom.line=Line()
-        sidebb=Button(text="",size_hint=(None,None),width=70,height=90,
+        sidebb=Button(text="",size_hint=(None,None),width=140,height=180,
         background_normal="",
         background_disabled_normal="",
         background_color=(0,0,0,0))
@@ -182,8 +182,8 @@ class screen(FloatLayout):
         def showtoast(message, duration=1):
             popup = Popup(
                 title='',
-                content=Label(text=message,font_size=24),
-                size_hint=(0.5, 0.2),
+                content=Label(text=message,font_size=48),
+                size_hint=(0.5, 0.1),
                 pos_hint={'center_x': 0.5, 'y': 0.05},
                 background_color=(0.2, 0.2, 0.2, 0.9),
                 auto_dismiss=False
@@ -204,14 +204,14 @@ class screen(FloatLayout):
             font_name="cambriab.ttf",
             font_size=50
         )
-        modelswi=BoxLayout(orientation="vertical",spacing=20,size_hint=(0.9,None),height=800)
+        modelswi=BoxLayout(orientation="vertical",spacing=20,size_hint=(0.9,None),height=500)
         with modelswi.canvas.before:
             Color(0.5,0.5,0.5,1)
             modelswi.border=Line(rounded_rectangle=(0,0,0,0,20),width=1.5)
             Color(30/255,42/255,86/255,0.8)
             modelswi.bg=RoundedRectangle(radius=[20])
         print(modelswi.pos,modelswi.size)
-        modellabel=Label(text=(f"Choose th LLM model ( current: {currentmodel} )"),markup=True,font_size=56,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(0,None),font_name="cambriab.ttf")
+        modellabel=Label(text=("Choose th LLM model"),markup=True,font_size=45,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(0,None),font_name="cambriab.ttf")
         modellabel.bind(
             size=lambda instance, value:
             setattr(instance, "text_size", (instance.width - 40, instance.height))
@@ -223,7 +223,7 @@ class screen(FloatLayout):
                 text=i,
                 group='my_group',
                 size_hint=(1, None),
-                height=50,
+                height=60,
                 font_size=46,
                 background_normal='',
                 background_down="",
@@ -244,7 +244,7 @@ class screen(FloatLayout):
                     instance.background_color=(0,0,0,0)
                 currentmodel=instance.text
                 print(currentmodel)
-                modellabel.text=(f"Choose th LLM model ( current: {currentmodel} )")
+                modellabel.text=("Choose th LLM model")
             btn.bind(state=updatecolor)
             modelswi.add_widget(btn)
         def onchanged(instance,value):
@@ -373,13 +373,13 @@ class screen(FloatLayout):
             valign="middle",
             text_size=(500, None),
             font_name="cambriab.ttf",
-            font_size=56,
+            font_size=40,
             markup=True)
             ###chatb.bind(
             ###    size=lambda instance, value:
             ###    setattr(instance, "text_size", (instance.width - 20, instance.height))
             ###)
-            chatb.bind(size=lambda i, v: setattr(i, "text_size", (i.width - 100, i.height+100)))
+            chatb.bind(size=lambda i, v: setattr(i, "text_size", (i.width - 100, i.height+200)))
             chatb.bind(on_press=partial(showchat,chatid))
             sidebar.layout.add_widget(chatb)
         modelsettings.bind(
@@ -400,7 +400,7 @@ class screen(FloatLayout):
             self.add_widget(sidebar)
             Animation(x=0,d=0.5,t="out_quart").start(sidebar)
         sidebb.bind(on_press=showsb)
-        logo=Label(text="PF-Carrot",color=(255/255,69/255,0/255,1),font_size=110,font_name="timesbd.ttf",bold=True)
+        logo=Label(text="PF-Carrot",color=(255/255,69/255,0/255,1),font_size=100,font_name="timesbd.ttf",bold=True)
         header.add_widget(logo)
         newcb=Button(text="",size_hint=(None,None),width=140,height=180,
         background_normal="",
@@ -418,18 +418,18 @@ class screen(FloatLayout):
             history=[]
             global currentchatid
             currentchatid=None
-            showtoast("new chat opened")
+            showtoast("New Chat Opened")
         newcb.bind(on_press=newchattt)
         x=0
-        label=Label(text="Welcome...have a good conversation",color=(255/255,255/255,255/255,1),font_size=64,font_name="georgia.ttf")
+        label=Label(text="Welcome...have a good conversation",color=(255/255,255/255,255/255,1),font_size=60,font_name="georgia.ttf")
         messages.add_widget(label)
-        textcontainer=FloatLayout(size_hint=(1,None),height=70)
+        textcontainer=FloatLayout(size_hint=(1,None),height=140)
         with textcontainer.canvas.before:
             Color(0.5,0.5,0.5,1)
             textcontainer.border=Line(rounded_rectangle=(0,0,0,0,20),width=1.5)
             Color(30/255,42/255,86/255,0.8)
             textcontainer.bg=RoundedRectangle(radius=[20])
-        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1))
+        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=28)
         textcontainer.add_widget(textbar)
         self.firstmessage=True
         def exctractm(answer):
