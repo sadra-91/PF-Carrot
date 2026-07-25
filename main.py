@@ -29,6 +29,7 @@ from kivy.uix.image import Image
 from kivy.animation import Animation
 
 Window.clearcolor = (0/255, 1/255, 26/255, 1)
+Window.softinput_mode="below_target"
 history=[]
 currentchatid=None
 currentmodel="llama3.1:8b"
@@ -309,7 +310,7 @@ class screen(FloatLayout):
             for i in range(0,messcount):
                 texttt=messlist[i]
                 if i%2==0:
-                    messagebubble=Label(text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=56,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+                    messagebubble=Label(text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=46,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
                     def refpress(message,instance,ref):
                         if ref=="copy":
                             Clipboard.copy(texttt)
@@ -319,7 +320,7 @@ class screen(FloatLayout):
                     messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     history.append(f"user:{messlist[i]}")
                 else:
-                    self.answerl=Label(markup=True,font_size=56,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+                    self.answerl=Label(markup=True,font_size=46,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
                     self.layout.add_widget(self.answerl)
                     self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     self.answerl.text=f"Carrot:\n{texttt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
@@ -429,7 +430,7 @@ class screen(FloatLayout):
             textcontainer.border=Line(rounded_rectangle=(0,0,0,0,20),width=1.5)
             Color(30/255,42/255,86/255,0.8)
             textcontainer.bg=RoundedRectangle(radius=[20])
-        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=28)
+        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=36)
         textcontainer.add_widget(textbar)
         self.firstmessage=True
         def exctractm(answer):
@@ -454,7 +455,7 @@ class screen(FloatLayout):
             print(textbar.text)
             message=textbar.text
             right=AnchorLayout(anchor_x="right",anchor_y="center")
-            messagebubble=Label(text=(f"You:\n{textbar.text}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=56,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+            messagebubble=Label(text=(f"You:\n{textbar.text}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=46,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
             def refpress(message,instance,ref):
                 if ref=="copy":
                     Clipboard.copy(message)
@@ -464,7 +465,7 @@ class screen(FloatLayout):
             messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             textbar.text=""
             global history
-            self.answerl=Label(markup=True,font_size=56,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+            self.answerl=Label(markup=True,font_size=46,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
             self.layout.add_widget(self.answerl)
             self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             self.dots=0
@@ -530,9 +531,25 @@ class screen(FloatLayout):
                 20
             ) 
         modelswi.bind(pos=updatehj, size=updatehj) 
+from jnius import autoclass
+from kivy.clock import Clock
+
 class pfcApp(App):
     def build(self):
         return screen()
+
+    def on_start(self):
+        Clock.schedule_once(self.set_system_bars, 0)
+
+    def set_system_bars(self, dt):
+        PythonActivity = autoclass("org.kivy.android.PythonActivity")
+        AndroidColor = autoclass("android.graphics.Color")
+
+        activity = PythonActivity.mActivity
+        window = activity.getWindow()
+
+        window.setStatusBarColor(AndroidColor.parseColor("#00011A"))
+        window.setNavigationBarColor(AndroidColor.parseColor("#00011A"))
 
 
 pfcApp().run()
