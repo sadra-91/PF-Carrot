@@ -114,7 +114,7 @@ class aianswer(Thread):
                 }
             )
             answer=response.json()["message"]["content"]
-            global history
+            #global history
             history.append(f"user:{self.message}")
             history.append(f"assistand:{answer}")
             conn=sqlite3.connect("database.db")
