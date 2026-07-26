@@ -1,6 +1,6 @@
 from kivy.config import Config
 Config.set('graphics', 'fullscreen','auto')
-Config.set("kivy","keyboard_mode","system")
+Config.set("kivy","keyboard_mode","systemanddock")
 
 import requests
 import sqlite3
@@ -114,7 +114,6 @@ class aianswer(Thread):
                 }
             )
             answer=response.json()["message"]["content"]
-            #global history
             history.append(f"user:{self.message}")
             history.append(f"assistand:{answer}")
             conn=sqlite3.connect("database.db")
@@ -213,7 +212,7 @@ class screen(FloatLayout):
             halign="left",
             valign="middle",
             text_size=(0, None),
-            font_name="Calibri.ttf",
+            font_name="calibri.ttf",
             font_size=50
         )
         modelswi=BoxLayout(orientation="vertical",spacing=20,size_hint=(0.9,None),height=500)
@@ -223,7 +222,7 @@ class screen(FloatLayout):
             Color(30/255,42/255,86/255,0.8)
             modelswi.bg=RoundedRectangle(radius=[20])
         print(modelswi.pos,modelswi.size)
-        modellabel=Label(text=("Choose the LLM model"),markup=True,font_size=45,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(0,None),font_name="Calibri.ttf")
+        modellabel=Label(text=("Choose the LLM model"),markup=True,font_size=45,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(0,None),font_name="calibri.ttf")
         modellabel.bind(
             size=lambda instance, value:
             setattr(instance, "text_size", (instance.width - 40, instance.height))
@@ -262,7 +261,7 @@ class screen(FloatLayout):
         def onchanged(instance,value):
             global urlt
             urlt=value
-        urltextbar=TextInput(hint_text="Enter the URL...",background_color=(0,0,0,0),size_hint=(1,None),font_name="Calibri.ttf",font_size=40,foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],x=modelsettings.x,y=modelsettings.y+40)
+        urltextbar=TextInput(hint_text="Enter the URL...",background_color=(0,0,0,0),size_hint=(1,None),font_name="calibri.ttf",font_size=40,foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],x=modelsettings.x,y=modelsettings.y+40)
         urltextbar.bind(text=onchanged)
         urltextbar.bind(
             size=lambda instance, value:
@@ -279,7 +278,7 @@ class screen(FloatLayout):
             halign="left",
             valign="middle",
             text_size=(0, None),
-            font_name="Calibri.ttf",
+            font_name="calibri.ttf",
             font_size=64,
             x=modelsettings.x,
             y=modelsettings.y+40
@@ -349,7 +348,7 @@ class screen(FloatLayout):
             halign="left",
             valign="middle",
             text_size=(0, None),
-            font_name="Calibri.ttf",
+            font_name="calibri.ttf",
             font_size=64,
         )
         cchl.bind(
@@ -384,7 +383,7 @@ class screen(FloatLayout):
             halign="left",
             valign="middle",
             text_size=(500, None),
-            font_name="Calibri.ttf",
+            font_name="calibri.ttf",
             font_size=40,
             markup=True)
             ###chatb.bind(
