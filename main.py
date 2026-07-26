@@ -1,5 +1,6 @@
 from kivy.config import Config
 Config.set('graphics', 'fullscreen','auto')
+Config.set("kivy","keyboard_mode","system")
 
 import requests
 import sqlite3
@@ -28,7 +29,7 @@ from kivy.graphics import Color,Line
 from kivy.uix.image import Image
 from kivy.animation import Animation
 
-Window.clearcolor = (0/255, 1/255, 26/255, 1)
+Window.clearcolor = (11/255,16/255,32/255,1)
 Window.softinput_mode="below_target"
 history=[]
 currentchatid=None
@@ -62,7 +63,7 @@ class Sidebar(ScrollView):
             self.x=-self.width
         self.bind(size=hide)
         with self.canvas.before:
-            Color(0/255,1/255,26/255,1)
+            Color(11/255,16/255,32/255,1)
             self.background=Rectangle()
             Color(0.5,0.5,0.5,1)
             self.borl=Line(width=1)
@@ -202,7 +203,7 @@ class screen(FloatLayout):
             halign="left",
             valign="middle",
             text_size=(0, None),
-            font_name="cambriab.ttf",
+            font_name="Calibri.ttf",
             font_size=50
         )
         modelswi=BoxLayout(orientation="vertical",spacing=20,size_hint=(0.9,None),height=500)
@@ -212,7 +213,7 @@ class screen(FloatLayout):
             Color(30/255,42/255,86/255,0.8)
             modelswi.bg=RoundedRectangle(radius=[20])
         print(modelswi.pos,modelswi.size)
-        modellabel=Label(text=("Choose th LLM model"),markup=True,font_size=45,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(0,None),font_name="cambriab.ttf")
+        modellabel=Label(text=("Choose the LLM model"),markup=True,font_size=45,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(0,None),font_name="Calibri.ttf")
         modellabel.bind(
             size=lambda instance, value:
             setattr(instance, "text_size", (instance.width - 40, instance.height))
@@ -251,7 +252,7 @@ class screen(FloatLayout):
         def onchanged(instance,value):
             global urlt
             urlt=value
-        urltextbar=TextInput(hint_text="Enter the URL...",background_color=(0,0,0,0),size_hint=(1,None),font_name="cambriab.ttf",font_size=64,foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],x=modelsettings.x,y=modelsettings.y+40)
+        urltextbar=TextInput(hint_text="Enter the URL...",background_color=(0,0,0,0),size_hint=(1,None),font_name="Calibri.ttf",font_size=40,foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],x=modelsettings.x,y=modelsettings.y+40)
         urltextbar.bind(text=onchanged)
         urltextbar.bind(
             size=lambda instance, value:
@@ -268,7 +269,7 @@ class screen(FloatLayout):
             halign="left",
             valign="middle",
             text_size=(0, None),
-            font_name="cambriab.ttf",
+            font_name="Calibri.ttf",
             font_size=64,
             x=modelsettings.x,
             y=modelsettings.y+40
@@ -310,7 +311,7 @@ class screen(FloatLayout):
             for i in range(0,messcount):
                 texttt=messlist[i]
                 if i%2==0:
-                    messagebubble=Label(text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=46,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+                    messagebubble=Label(text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=34,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
                     def refpress(message,instance,ref):
                         if ref=="copy":
                             Clipboard.copy(texttt)
@@ -320,7 +321,7 @@ class screen(FloatLayout):
                     messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     history.append(f"user:{messlist[i]}")
                 else:
-                    self.answerl=Label(markup=True,font_size=46,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+                    self.answerl=Label(markup=True,font_size=34,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
                     self.layout.add_widget(self.answerl)
                     self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     self.answerl.text=f"Carrot:\n{texttt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
@@ -338,7 +339,7 @@ class screen(FloatLayout):
             halign="left",
             valign="middle",
             text_size=(0, None),
-            font_name="cambriab.ttf",
+            font_name="Calibri.ttf",
             font_size=64,
         )
         cchl.bind(
@@ -373,7 +374,7 @@ class screen(FloatLayout):
             halign="left",
             valign="middle",
             text_size=(500, None),
-            font_name="cambriab.ttf",
+            font_name="Calibri.ttf",
             font_size=40,
             markup=True)
             ###chatb.bind(
@@ -455,7 +456,7 @@ class screen(FloatLayout):
             print(textbar.text)
             message=textbar.text
             right=AnchorLayout(anchor_x="right",anchor_y="center")
-            messagebubble=Label(text=(f"You:\n{textbar.text}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=46,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+            messagebubble=Label(text=(f"You:\n{textbar.text}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=34,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
             def refpress(message,instance,ref):
                 if ref=="copy":
                     Clipboard.copy(message)
@@ -465,7 +466,7 @@ class screen(FloatLayout):
             messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             textbar.text=""
             global history
-            self.answerl=Label(markup=True,font_size=46,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="cambriab.ttf")
+            self.answerl=Label(markup=True,font_size=34,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
             self.layout.add_widget(self.answerl)
             self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             self.dots=0
