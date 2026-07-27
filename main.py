@@ -29,6 +29,7 @@ from kivy.uix.button import Button
 from kivy.graphics import Color,Line
 from kivy.uix.image import Image
 from kivy.animation import Animation
+from jnius import autoclass
 
 Window.clearcolor = (11/255,16/255,32/255,1)
 Window.softinput_mode="below_target"
@@ -58,6 +59,12 @@ def markdown(text):
         flags=re.DOTALL
     )
     return text
+
+PythonActivity = autoclass("org.kivy.android.PythonActivity")
+Rect = autoclass("android.graphics.Rect")
+
+activity = PythonActivity.mActivity
+view = activity.getWindow().getDecorView()
 
 class Overlay(ButtonBehavior,Widget):
     def __init__(self,**kwargs):
@@ -344,7 +351,7 @@ class screen(FloatLayout):
                 texttt=messlist[i]
                 if i%2==0:
                     usermt=markdown(messlist[0])
-                    messagebubble=Label(markup=True,font_size=34,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+                    messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
                     messagebubble.text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
                     def refpress(message,instance,ref):
                         if ref=="copy":
@@ -355,7 +362,7 @@ class screen(FloatLayout):
                     messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     history.append(f"user:{messlist[i]}")
                 else:
-                    self.answerl=Label(markup=True,font_size=34,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+                    self.answerl=Label(markup=True,font_size=55,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
                     self.layout.add_widget(self.answerl)
                     self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     botmt=markdown(texttt)
@@ -468,13 +475,15 @@ class screen(FloatLayout):
             textcontainer.bg=RoundedRectangle(radius=[20])
         textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=36)
         textcontainer.add_widget(textbar)
+        def getkeyboardh():
+            rect = Rect()
+            view.getWindowVisibleDisplayFrame(rect)
+            screenheight = view.getRootView().getHeight()
+            keyboardheight = screenheight - rect.bottom
+            return keyboardheight
         def onfocus(self,instance):
-            value=textbar.focus
-            if value:
-                keyboardh=Window.keyboard_height
-                main.height=Window.height-keyboardh
-            else:
-                main.height=Window.height
+            keyboardheight=getkeyboardh()
+            main.height=Window.height-keyboardheight()
         textbar.bind(focus=onfocus)
         self.firstmessage=True
         def exctractm(answer):
@@ -501,7 +510,7 @@ class screen(FloatLayout):
             message=textbar.text
             right=AnchorLayout(anchor_x="right",anchor_y="center")
             usermt=markdown(message)
-            messagebubble=Label(markup=True,font_size=42,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+            messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
             messagebubble.text=(f"You:\n{usermt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
             def refpress(message,instance,ref):
                 if ref=="copy":
@@ -512,7 +521,7 @@ class screen(FloatLayout):
             messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             textbar.text=""
             global history
-            self.answerl=Label(markup=True,font_size=42,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+            self.answerl=Label(markup=True,font_size=55,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
             self.layout.add_widget(self.answerl)
             self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             self.dots=0
@@ -578,7 +587,6 @@ class screen(FloatLayout):
                 20
             ) 
         modelswi.bind(pos=updatehj, size=updatehj) 
-from jnius import autoclass
 from kivy.clock import Clock
 
 class pfcApp(App):
