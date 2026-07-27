@@ -1,9 +1,9 @@
 from kivy.config import Config
 Config.set('graphics', 'fullscreen','auto')
-Config.set("kivy","keyboard_mode","systemanddock")
 
 import requests
 import sqlite3
+import re
 from kivy.app import App
 from functools import partial
 from kivy.metrics import sp
@@ -15,6 +15,7 @@ from kivy.core.window import Window
 from kivy.uix.widget import Widget
 from kivy.uix.label import Label
 from kivy.core.clipboard import Clipboard
+from kivy.core.text import LabelBase
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, RoundedRectangle, Line,Rectangle
@@ -35,6 +36,28 @@ history=[]
 currentchatid=None
 currentmodel="llama3.1:8b"
 urlt=""
+
+LabelBase.register(
+    name="Candara",
+    fn_regular="Candara.ttf",
+    fn_bold="Candarab.ttf",
+    fn_italic="Candarai.ttf",
+    fn_bolditalic="Candaraz.ttf"
+)
+LabelBase.register(
+    name="roboto",
+    fn_regular="Roboto-Regular.ttf",
+)
+
+def markdown(text):
+    text=re.sub(r"\*\*(.*?)\*\*",r"[b]\1[/b]",text)
+    text=re.sub(r"\*(.*?)\*",r"[i]\1[/i]",text)
+    text=re.sub(r"```(.*?)```",
+        r"\n\n\n[font=roboto]\1[/font]\n \n \n",
+        text,
+        flags=re.DOTALL
+    )
+    return text
 
 class Overlay(ButtonBehavior,Widget):
     def __init__(self,**kwargs):
@@ -320,11 +343,13 @@ class screen(FloatLayout):
             for i in range(0,messcount):
                 texttt=messlist[i]
                 if i%2==0:
-                    messagebubble=Label(text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=34,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+                    usermt=markdown(messlist[0])
+                    messagebubble=Label(markup=True,font_size=34,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+                    messagebubble.text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
                     def refpress(message,instance,ref):
                         if ref=="copy":
                             Clipboard.copy(texttt)
-                            instance.text=f"You:\{messlist[0]}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
+                            instance.text=f"You:\{usermt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
                     messagebubble.bind(on_ref_press=partial(refpress,texttt))
                     self.layout.add_widget(messagebubble)
                     messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
@@ -333,11 +358,12 @@ class screen(FloatLayout):
                     self.answerl=Label(markup=True,font_size=34,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
                     self.layout.add_widget(self.answerl)
                     self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
-                    self.answerl.text=f"Carrot:\n{texttt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
+                    botmt=markdown(texttt)
+                    self.answerl.text=f"Carrot:\n{botmt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
                     def responserefp(response,instance,ref):
                         if ref=="copy":
                             Clipboard.copy(messlist[i])
-                            instance.text=f"Carrot:\n{texttt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
+                            instance.text=f"Carrot:\n{botmt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
                     self.answerl.bind(on_ref_press=partial(responserefp,texttt))
                     history.append(f"assistant:{messlist[i]}")
         cchl=Label(
@@ -384,7 +410,7 @@ class screen(FloatLayout):
             valign="middle",
             text_size=(500, None),
             font_name="calibri.ttf",
-            font_size=40,
+            font_size=42,
             markup=True)
             ###chatb.bind(
             ###    size=lambda instance, value:
@@ -442,10 +468,19 @@ class screen(FloatLayout):
             textcontainer.bg=RoundedRectangle(radius=[20])
         textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=36)
         textcontainer.add_widget(textbar)
+        def onfocus(self,instance):
+            value=textbar.focus
+            if value:
+                keyboardh=Window.keyboard_height
+                main.height=Window.height-keyboardh
+            else:
+                main.height=Window.height
+        textbar.bind(focus=onfocus)
         self.firstmessage=True
         def exctractm(answer):
             self.event.cancel()
-            self.answerl.text=f"Carrot:\n{answer}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
+            botmt=markdown(answer)
+            self.answerl.text=f"Carrot:\n{botmt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
             def responserefp(answert,instance,ref):
                 if ref=="copy":
                     Clipboard.copy(answert)
@@ -465,17 +500,19 @@ class screen(FloatLayout):
             print(textbar.text)
             message=textbar.text
             right=AnchorLayout(anchor_x="right",anchor_y="center")
-            messagebubble=Label(text=(f"You:\n{textbar.text}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"),markup=True,font_size=34,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+            usermt=markdown(message)
+            messagebubble=Label(markup=True,font_size=42,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+            messagebubble.text=(f"You:\n{usermt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
             def refpress(message,instance,ref):
                 if ref=="copy":
                     Clipboard.copy(message)
-                    instance.text=f"You:\n{message}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
+                    instance.text=f"You:\n{usermt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
             messagebubble.bind(on_ref_press=partial(refpress,message))
             self.layout.add_widget(messagebubble)
             messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             textbar.text=""
             global history
-            self.answerl=Label(markup=True,font_size=34,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+            self.answerl=Label(markup=True,font_size=42,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
             self.layout.add_widget(self.answerl)
             self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             self.dots=0
@@ -558,8 +595,8 @@ class pfcApp(App):
         activity = PythonActivity.mActivity
         window = activity.getWindow()
 
-        window.setStatusBarColor(AndroidColor.parseColor("#00011A"))
-        window.setNavigationBarColor(AndroidColor.parseColor("#00011A"))
+        window.setStatusBarColor(AndroidColor.parseColor("#0b1020"))
+        window.setNavigationBarColor(AndroidColor.parseColor("#0b1020"))
 
 
 pfcApp().run()
