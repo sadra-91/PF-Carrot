@@ -483,7 +483,7 @@ class screen(FloatLayout):
             return keyboardheight
         def onfocus(self,instance):
             keyboardheight=getkeyboardh()
-            main.height=Window.height-keyboardheight()
+            main.height=Window.height-keyboardheight
         textbar.bind(focus=onfocus)
         self.firstmessage=True
         def exctractm(answer):
