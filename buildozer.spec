@@ -10,7 +10,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,db
 
 version = 0.1
 
-requirements = python3,kivy,requests,pyjnius,android
+requirements = python3,kivy,requests,pyjnius,android,arabic-reshaper,python-bidi
 
 icon.filename = icon.png
 
