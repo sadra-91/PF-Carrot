@@ -243,7 +243,7 @@ class screen(FloatLayout):
         def showtoast(message, duration=1):
             popup = Popup(
                 title='',
-                content=Label(text=message,font_size=48),
+                content=Label(text=message,font_size=48,font_name="Vazirmatn-Light.ttf),
                 size_hint=(0.5, 0.1),
                 pos_hint={'center_x': 0.5, 'y': 0.05},
                 background_color=(0.2, 0.2, 0.2, 0.9),
@@ -370,7 +370,7 @@ class screen(FloatLayout):
             for i in range(0,messcount):
                 texttt=messlist[i]
                 if i%2==0:
-                    messagehtml=markdown(messlist[0])
+                    messagehtml=markdown(messlist[i])
                     usermt=fix(messagehtml)
                     messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
                     messagebubble.text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
@@ -496,7 +496,7 @@ class screen(FloatLayout):
             textcontainer.border=Line(rounded_rectangle=(0,0,0,0,20),width=1.5)
             Color(30/255,42/255,86/255,0.8)
             textcontainer.bg=RoundedRectangle(radius=[20])
-        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=36,font_name="Vazirmatn-Light.ttf)
+        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=36,font_name="Vazirmatn-Light.ttf")
         textcontainer.add_widget(textbar)
         def getkeyboardh():
             rect = Rect()
