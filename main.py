@@ -243,7 +243,7 @@ class screen(FloatLayout):
         def showtoast(message, duration=1):
             popup = Popup(
                 title='',
-                content=Label(text=message,font_size=48,font_name="Vazirmatn-Light.ttf),
+                content=Label(text=message,font_size=48,font_name="Vazirmatn-Light.ttf"),
                 size_hint=(0.5, 0.1),
                 pos_hint={'center_x': 0.5, 'y': 0.05},
                 background_color=(0.2, 0.2, 0.2, 0.9),
