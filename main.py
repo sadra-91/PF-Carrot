@@ -20,6 +20,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.graphics import Color, RoundedRectangle, Line,Rectangle
 from kivy.uix.togglebutton import ToggleButton
+from android.runnable import run_on_ui_thread
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.floatlayout import FloatLayout
@@ -37,6 +38,17 @@ history=[]
 currentchatid=None
 currentmodel="llama3.1:8b"
 urlt=""
+
+@run_on_ui_thread
+def set_system_bars(dt):
+    PythonActivity = autoclass("org.kivy.android.PythonActivity")
+    AndroidColor = autoclass("android.graphics.Color")
+
+    activity = PythonActivity.mActivity
+    window = activity.getWindow()
+
+    window.setStatusBarColor(AndroidColor.parseColor("#0b1020"))
+    window.setNavigationBarColor(AndroidColor.parseColor("#0b1020"))
 
 LabelBase.register(
     name="Candara",
@@ -592,19 +604,10 @@ from kivy.clock import Clock
 class pfcApp(App):
     def build(self):
         return screen()
-
     def on_start(self):
-        Clock.schedule_once(self.set_system_bars, 0)
+        Clock.schedule_once(set_system_bars, 0)
 
-    def set_system_bars(self, dt):
-        PythonActivity = autoclass("org.kivy.android.PythonActivity")
-        AndroidColor = autoclass("android.graphics.Color")
 
-        activity = PythonActivity.mActivity
-        window = activity.getWindow()
-
-        window.setStatusBarColor(AndroidColor.parseColor("#0b1020"))
-        window.setNavigationBarColor(AndroidColor.parseColor("#0b1020"))
-
+   
 
 pfcApp().run()
