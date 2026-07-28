@@ -29,6 +29,8 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.graphics import Color,Line
 from kivy.uix.image import Image
+import arabic_reshaper
+from bidi.algorithm import get_display
 from kivy.animation import Animation
 from jnius import autoclass
 
@@ -52,10 +54,10 @@ def set_system_bars(dt):
 
 LabelBase.register(
     name="Candara",
-    fn_regular="Candara.ttf",
-    fn_bold="Candarab.ttf",
-    fn_italic="Candarai.ttf",
-    fn_bolditalic="Candaraz.ttf"
+    fn_regular="Vazirmatn-Light.ttf",
+    fn_bold="Vazirmatn-Bold.ttf",
+    fn_italic="Vazirmatn-Thin.ttf",
+    fn_bolditalic="Vazirmatn-ExtraBold.ttf"
 )
 LabelBase.register(
     name="roboto",
@@ -71,6 +73,12 @@ def markdown(text):
         flags=re.DOTALL
     )
     return text
+    
+def fix(text):
+    if text is None:
+        return ""
+    reshaped=arabic_reshaper.reshape(str(text))
+    return get_display(reshaped)
 
 PythonActivity = autoclass("org.kivy.android.PythonActivity")
 Rect = autoclass("android.graphics.Rect")
@@ -362,7 +370,8 @@ class screen(FloatLayout):
             for i in range(0,messcount):
                 texttt=messlist[i]
                 if i%2==0:
-                    usermt=markdown(messlist[0])
+                    messagehtml=markdown(messlist[0])
+                    usermt=fix(messagehtml)
                     messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
                     messagebubble.text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
                     def refpress(message,instance,ref):
@@ -377,7 +386,8 @@ class screen(FloatLayout):
                     self.answerl=Label(markup=True,font_size=55,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
                     self.layout.add_widget(self.answerl)
                     self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
-                    botmt=markdown(texttt)
+                    bothtml=markdown(texttt)
+                    botmt=fix(bothtml)
                     self.answerl.text=f"Carrot:\n{botmt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
                     def responserefp(response,instance,ref):
                         if ref=="copy":
@@ -418,7 +428,8 @@ class screen(FloatLayout):
             chatname=i[1]
             chatcrtime=i[2]
             print(f"chat {chatid}\n-------------\nchat id:{chatid}\nchat name={chatname}\nchat created at:{chatcrtime}")
-            chatb=Button(text=f"\n{chatname}\n[color=bebebe]{chatcrtime}[/color]\n",
+            fichatname=fix(chatname)
+            chatb=Button(text=f"\n{fichatname}\n[color=bebebe]{chatcrtime}[/color]\n",
             size_hint=(1, None),
             height=60,
             background_normal="",
@@ -428,7 +439,7 @@ class screen(FloatLayout):
             halign="left",
             valign="middle",
             text_size=(500, None),
-            font_name="calibri.ttf",
+            font_name="Vazirmatn-Light.ttf",
             font_size=42,
             markup=True)
             ###chatb.bind(
@@ -500,7 +511,8 @@ class screen(FloatLayout):
         self.firstmessage=True
         def exctractm(answer):
             self.event.cancel()
-            botmt=markdown(answer)
+            bothtml=markdown(answer)
+            botmt=fix(bothtml)
             self.answerl.text=f"Carrot:\n{botmt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
             def responserefp(answert,instance,ref):
                 if ref=="copy":
@@ -521,7 +533,8 @@ class screen(FloatLayout):
             print(textbar.text)
             message=textbar.text
             right=AnchorLayout(anchor_x="right",anchor_y="center")
-            usermt=markdown(message)
+            umhtml=markdown(message)
+            usermt=fix(umhtml)
             messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
             messagebubble.text=(f"You:\n{usermt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
             def refpress(message,instance,ref):
