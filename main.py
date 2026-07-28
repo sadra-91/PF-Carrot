@@ -496,7 +496,7 @@ class screen(FloatLayout):
             textcontainer.border=Line(rounded_rectangle=(0,0,0,0,20),width=1.5)
             Color(30/255,42/255,86/255,0.8)
             textcontainer.bg=RoundedRectangle(radius=[20])
-        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=36)
+        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=36,font_name="Vazirmatn-Light.ttf)
         textcontainer.add_widget(textbar)
         def getkeyboardh():
             rect = Rect()
