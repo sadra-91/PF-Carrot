@@ -372,7 +372,7 @@ class screen(FloatLayout):
                 if i%2==0:
                     messagehtml=markdown(messlist[i])
                     usermt=fix(messagehtml)
-                    messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+                    messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
                     messagebubble.text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
                     def refpress(message,instance,ref):
                         if ref=="copy":
@@ -383,7 +383,7 @@ class screen(FloatLayout):
                     messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     history.append(f"user:{messlist[i]}")
                 else:
-                    self.answerl=Label(markup=True,font_size=55,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+                    self.answerl=Label(markup=True,font_size=55,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
                     self.layout.add_widget(self.answerl)
                     self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     bothtml=markdown(texttt)
@@ -535,7 +535,7 @@ class screen(FloatLayout):
             right=AnchorLayout(anchor_x="right",anchor_y="center")
             umhtml=markdown(message)
             usermt=fix(umhtml)
-            messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+            messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
             messagebubble.text=(f"You:\n{usermt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
             def refpress(message,instance,ref):
                 if ref=="copy":
@@ -546,7 +546,7 @@ class screen(FloatLayout):
             messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             textbar.text=""
             global history
-            self.answerl=Label(markup=True,font_size=55,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara.ttf")
+            self.answerl=Label(markup=True,font_size=55,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
             self.layout.add_widget(self.answerl)
             self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             self.dots=0
