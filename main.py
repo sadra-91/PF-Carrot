@@ -136,21 +136,31 @@ class aianswer(Thread):
         self.history=history
         self.callback=callback
         self.command=command
+        messages=[
+        {
+        "role":"system",
+        "content":self.command
+        }
+        ]
+
+        for item in self.history:
+            role,msg=item.split(":",1)
+            messages.append({
+                "role":role,
+                "content":msg
+            })
+
+        messages.append({
+        "role":"user",
+        "content":self.message
+        })
     def run(self):
         try:
             response=requests.post(
                 urlt,
                 json={
                     "model":currentmodel,
-                    "messages":[
-                        {
-                            "role":"system",
-                            "content":self.command
-                        },
-                            {"role":"user",
-                            "content":self.message
-                        }
-                    ],
+                    "messages":messages,
                     "stream":False
                 }
             )
@@ -553,18 +563,7 @@ class screen(FloatLayout):
                 if self.dots>3:
                     self.dots=0
             self.event=Clock.schedule_interval(thinking,0.3)
-            command=f"""You are an AI chatbot named Carrot.
-
-                            Rules:
-                            - Be friendly and natural.
-                            - Introduce yourself only if this is the first message of the conversation.
-                            - If this is the first message, greet the user.
-                            - Otherwise, do not greet the user or introduce yourself again.
-                            - Reply only to the latest user message.
-                            - Use the chat history only for context and continuity. Do not respond to earlier messages unless the latest message refers to them.
-
-                            Chat history:
-                            {self.history}
+            command=f"""You are an AI chatbot named Carrot.be friendly and natural
                             """
             aianswer(message,history,exctractm,command).start()
         answeringiii=Image(source="answering.png",size_hint=(None,None),size=(70, 70),allow_stretch=True,keep_ratio=True)
