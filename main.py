@@ -40,6 +40,7 @@ history=[]
 currentchatid=None
 currentmodel="llama3.1:8b"
 urlt=""
+lastmodel=""
 
 @run_on_ui_thread
 def set_system_bars(dt):
@@ -129,11 +130,12 @@ class Sidebar(ScrollView):
 
 
 class aianswer(Thread):
-    def __init__(self,message,history,callback):
+    def __init__(self,message,history,callback,command):
         super().__init__(daemon=True)
         self.message=message
         self.history=history
         self.callback=callback
+        self.command=command
     def run(self):
         try:
             response=requests.post(
@@ -143,19 +145,8 @@ class aianswer(Thread):
                     "messages":[
                         {
                             "role":"system",
-                            "content":f"""You are an AI chatbot named Carrot.
-
-                            Rules:
-                            - Be friendly and natural.
-                            - Introduce yourself only if this is the first message of the conversation.
-                            - If this is the first message, greet the user.
-                            - Otherwise, do not greet the user or introduce yourself again.
-                            - Reply only to the latest user message.
-                            - Use the chat history only for context and continuity. Do not respond to earlier messages unless the latest message refers to them.
-
-                            Chat history:
-                            {history}
-                            """},
+                            "content":self.command
+                        },
                             {"role":"user",
                             "content":self.message
                         }
@@ -372,7 +363,7 @@ class screen(FloatLayout):
                 if i%2==0:
                     messagehtml=markdown(messlist[i])
                     usermt=fix(messagehtml)
-                    messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
+                    messagebubble=Label(markup=True,font_size=50,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
                     messagebubble.text=(f"You:\n{messlist[i]}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
                     def refpress(message,instance,ref):
                         if ref=="copy":
@@ -383,7 +374,7 @@ class screen(FloatLayout):
                     messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     history.append(f"user:{messlist[i]}")
                 else:
-                    self.answerl=Label(markup=True,font_size=55,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
+                    self.answerl=Label(markup=True,font_size=50,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
                     self.layout.add_widget(self.answerl)
                     self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
                     bothtml=markdown(texttt)
@@ -510,6 +501,9 @@ class screen(FloatLayout):
         textbar.bind(focus=onfocus)
         self.firstmessage=True
         def exctractm(answer):
+            send.bind(on_press=sendmessage)
+            send.remove_widget(answeringi)
+            send.add_widget(sendimage)
             self.event.cancel()
             bothtml=markdown(answer)
             botmt=fix(bothtml)
@@ -520,6 +514,9 @@ class screen(FloatLayout):
                     instance.text=f"Carrot:\n{answert}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
             self.answerl.bind(on_ref_press=partial(responserefp,answer))
         def sendmessage(instance):
+            send.unbind(on_press=sendmessage)
+            send.remove_widget(sendimage)
+            send.add_widget(answeringi)
             if self.firstmessage:
                 self.mlist=ScrollView()
                 self.mlist.opacity=1
@@ -535,7 +532,7 @@ class screen(FloatLayout):
             right=AnchorLayout(anchor_x="right",anchor_y="center")
             umhtml=markdown(message)
             usermt=fix(umhtml)
-            messagebubble=Label(markup=True,font_size=55,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
+            messagebubble=Label(markup=True,font_size=50,width=messages.width,halign="right",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
             messagebubble.text=(f"You:\n{usermt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]")
             def refpress(message,instance,ref):
                 if ref=="copy":
@@ -546,7 +543,7 @@ class screen(FloatLayout):
             messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             textbar.text=""
             global history
-            self.answerl=Label(markup=True,font_size=55,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
+            self.answerl=Label(markup=True,font_size=50,width=messages.width,halign="left",valign="middle",size_hint_y=None,size_hint_x=1,text_size=(self.layout.width-50,None),font_name="Candara")
             self.layout.add_widget(self.answerl)
             self.answerl.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
             self.dots=0
@@ -556,12 +553,73 @@ class screen(FloatLayout):
                 if self.dots>3:
                     self.dots=0
             self.event=Clock.schedule_interval(thinking,0.3)
-            aianswer(message,history,exctractm).start()
+            command=f"""You are an AI chatbot named Carrot.
+
+                            Rules:
+                            - Be friendly and natural.
+                            - Introduce yourself only if this is the first message of the conversation.
+                            - If this is the first message, greet the user.
+                            - Otherwise, do not greet the user or introduce yourself again.
+                            - Reply only to the latest user message.
+                            - Use the chat history only for context and continuity. Do not respond to earlier messages unless the latest message refers to them.
+
+                            Chat history:
+                            {self.history}
+                            """
+            aianswer(message,history,exctractm,command).start()
+        answeringiii=Image(source="answering.png",size_hint=(None,None),size=(70, 70),allow_stretch=True,keep_ratio=True)
+        def rewritefinish(newp):
+            send.bind(on_press=sendmessage)
+            rewriteb.bind(on_press=rewrite)
+            rewriteb.remove_widget(answeringiii)
+            rewriteb.add_widget(rewritei)
+            textbar.text=newp
+            print(newp)
+            global currentmodel
+            currentmodel=lastmodel
+        def rewrite(self):
+            send.unbind(on_press=sendmessage)
+            rewriteb.unbind(on_press=rewrite)
+            rewriteb.remove_widget(rewritei)
+            rewriteb.add_widget(answeringiii)
+            global currentmodel
+            lastmodel=currentmodel
+            currentmodel="gemma3:4b"
+            rag=("""
+            You are an AI Prompt Designer. Rewrite the user's request into a clear, professional, and optimized prompt while preserving its intent.
+
+            Rules:
+            - Do not answer the request.
+            - Respond with only the final prompt.
+            """)
+            aianswer(textbar.text,None,rewritefinish,rag).start()
+        rewriteb=Button(font_name="Candara.ttf",font_size=22,size_hint=(None,None),size=(65,65),background_normal="",background_color=(0,0,0,0))
+        rewriteb.bind(on_press=rewrite)
+        rewritei=Image(source="download.png",size=(75,75))
+        rewriteb.add_widget(rewritei)
+        showing=False
+        def showorhide(instance,value):
+            nonlocal showing
+            if len(value)>70:
+                if(showing==False):
+                    bottom.add_widget(rewriteb,index=1)
+                    showing=True
+                else:
+                    return
+            else:
+                if showing:
+                    bottom.remove_widget(rewriteb)
+                    showing=False
+                else:
+                    return
+
+        textbar.bind(text=showorhide)
         send=Button(size_hint=(None,None),width=140,height=140,
         background_normal="",
         background_disabled_normal="",
         background_color=(0,0,0,0))
         sendimage=Image(source="send.png",size_hint=(None,None),size=(140, 140),allow_stretch=True,keep_ratio=True,pos=send.pos)
+        answeringi=Image(source="answering.png",size_hint=(None,None),size=(70, 70),allow_stretch=True,keep_ratio=True,pos=send.pos)
         send.add_widget(sendimage)
         bottom.add_widget(textcontainer)
         bottom.add_widget(send)
@@ -578,7 +636,8 @@ class screen(FloatLayout):
         bottom.bind(pos=updateb,size=updateb)
         def centerimage(instance, value):
             sendimage.center = instance.center
-
+            answeringi.center=instance.center
+            
         send.bind(pos=centerimage, size=centerimage)
         def centerimage2(instance,value):
             sideimage.center=instance.center
@@ -587,6 +646,11 @@ class screen(FloatLayout):
         def centerimage3(instance,value):
             newci.center=instance.center
         newcb.bind(pos=centerimage3,size=centerimage3)
+
+        def centerimage4(instance,value):
+            rewritei.center=instance.center
+            answeringiii.center=instance.center
+        rewriteb.bind(pos=centerimage4,size=centerimage4)
 
         def updatet(instance, value):
             textcontainer.bg.pos = textcontainer.pos
