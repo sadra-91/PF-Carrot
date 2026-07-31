@@ -11,13 +11,16 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -25,32 +28,72 @@ jobs:
           distribution: "temurin"
           java-version: "17"
 
+
+      - name: Cache Buildozer
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.buildozer
+            ~/.gradle
+          key: buildozer-${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
+          restore-keys: |
+            buildozer-${{ runner.os }}-
+
+
       - name: Install system packages
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            git zip unzip openjdk-17-jdk \
-            autoconf automake libtool pkg-config \
-            zlib1g-dev libncurses5-dev libncursesw5-dev \
-            libtinfo5 cmake libffi-dev libssl-dev \
-            build-essential ccache \
-            libltdl-dev libsqlite3-dev \
-            libbz2-dev libreadline-dev \
-            libffi-dev wget curl
+          sudo apt update
 
-      - name: Install Python packages
+          sudo apt install -y \
+            git \
+            zip \
+            unzip \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            cmake \
+            build-essential \
+            ccache \
+            zlib1g-dev \
+            libncurses5-dev \
+            libncursesw5-dev \
+            libtinfo5 \
+            libffi-dev \
+            libssl-dev \
+            libsqlite3-dev \
+            libbz2-dev \
+            libreadline-dev \
+            wget \
+            curl
+
+
+      - name: Upgrade pip tools
         run: |
-          python -m pip install --upgrade "pip<24.1"
+          python -m pip install --upgrade pip setuptools wheel
+
+
+      - name: Install Python build dependencies
+        run: |
           pip install Cython==0.29.36
-          pip install buildozer==1.5.0
+          pip install buildozer==1.6.0
+
+
+      - name: Check environment
+        run: |
+          python --version
+          java -version
+          buildozer --version
+
 
       - name: Build APK
         run: |
           buildozer android debug
 
+
       - name: Upload APK
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: APK
+          name: PF-Carrot-APK
           path: bin/*.apk
