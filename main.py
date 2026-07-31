@@ -136,21 +136,21 @@ class aianswer(Thread):
         self.history=history
         self.callback=callback
         self.command=command
-        messages=[
+        self.messages=[
         {
         "role":"system",
         "content":self.command
         }
         ]
+        if self.history:
+            for item in self.history:
+                role,msg=item.split(":",1)
+                self.messages.append({
+                    "role":role,
+                    "content":msg
+                })
 
-        for item in self.history:
-            role,msg=item.split(":",1)
-            messages.append({
-                "role":role,
-                "content":msg
-            })
-
-        messages.append({
+        self.messages.append({
         "role":"user",
         "content":self.message
         })
@@ -160,13 +160,13 @@ class aianswer(Thread):
                 urlt,
                 json={
                     "model":currentmodel,
-                    "messages":messages,
+                    "messages":self.messages,
                     "stream":False
                 }
             )
             answer=response.json()["message"]["content"]
             history.append(f"user:{self.message}")
-            history.append(f"assistand:{answer}")
+            history.append(f"assistant:{answer}")
             conn=sqlite3.connect("database.db")
             cursor=conn.cursor()
             global currentchatid
