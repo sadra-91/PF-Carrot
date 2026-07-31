@@ -497,7 +497,7 @@ class screen(FloatLayout):
             textcontainer.border=Line(rounded_rectangle=(0,0,0,0,20),width=1.5)
             Color(30/255,42/255,86/255,0.8)
             textcontainer.bg=RoundedRectangle(radius=[20])
-        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=False,padding=[15,10,15,10],size_hint=(1,1),font_size=36,font_name="Vazirmatn-Light.ttf")
+        textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=True,padding=[15,10,15,10],size_hint=(1,1),font_size=36,font_name="Vazirmatn-Light.ttf")
         textcontainer.add_widget(textbar)
         def getkeyboardh():
             rect = Rect()
@@ -592,7 +592,7 @@ class screen(FloatLayout):
             - Respond with only the final prompt.
             """)
             aianswer(textbar.text,None,rewritefinish,rag).start()
-        rewriteb=Button(font_name="Candara.ttf",font_size=22,size_hint=(None,None),size=(65,65),background_normal="",background_color=(0,0,0,0))
+        rewriteb=Button(font_name="Candara.ttf",font_size=22,size_hint=(None,None),size=(75,75),background_normal="",background_color=(0,0,0,0))
         rewriteb.bind(on_press=rewrite)
         rewritei=Image(source="download.png",size=(75,75))
         rewriteb.add_widget(rewritei)
@@ -652,13 +652,13 @@ class screen(FloatLayout):
         rewriteb.bind(pos=centerimage4,size=centerimage4)
 
         def updatet(instance, value):
-            textcontainer.bg.pos = textcontainer.pos
-            textcontainer.bg.size = textcontainer.size
+            textcontainer.bg.pos = (instance.x,instance.y-5)
+            textcontainer.bg.size = (instance.width,instance.height+5)
             textcontainer.border.rounded_rectangle = (
                 textcontainer.x,
-                textcontainer.y,
+                textcontainer.y-5,
                 textcontainer.width,
-                textcontainer.height,
+                textcontainer.height+5,
                 20
             )
 
