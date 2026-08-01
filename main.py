@@ -581,7 +581,7 @@ class screen(FloatLayout):
             rewriteb.unbind(on_press=rewrite)
             rewriteb.remove_widget(rewritei)
             rewriteb.add_widget(answeringiii)
-            global currentmodel
+            global currentmodel,lastmodel
             lastmodel=currentmodel
             currentmodel="gemma3:4b"
             rag=("""
