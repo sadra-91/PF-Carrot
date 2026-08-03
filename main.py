@@ -482,7 +482,7 @@ class screen(FloatLayout):
             self.add_widget(sidebar)
             Animation(x=0,d=0.5,t="out_quart").start(sidebar)
         sidebb.bind(on_press=showsb)
-        logo=Label(text="PF-Carrot",color=(1,1,1),font_size=72,font_name="Calibri.ttf",halign="left",size_hint_x=1,valign="middle")
+        logo=Label(text="PF-Carrot",color=(1,1,1),font_size=72,font_name="calibri.ttf",halign="left",size_hint_x=1,valign="middle")
         logo.bind(
             size=lambda instance, value:
             setattr(instance, "text_size", (instance.width - 20, instance.height))
