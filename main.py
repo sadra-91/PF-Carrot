@@ -507,7 +507,7 @@ class screen(FloatLayout):
             showtoast("New Chat Opened")
         newcb.bind(on_press=newchattt)
         x=0
-        label=Label(text="welcome...how can I help you?",color=(255/255,255/255,255/255,1),font_size=90,font_name="Calibril.ttf")
+        label=Label(text="welcome...how can I help you?",color=(255/255,255/255,255/255,1),font_size=90,font_name="calibril.ttf")
         messages.add_widget(label)
         textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=True,padding=[15,10,15,10],size_hint=(1,1),font_size=36,font_name="Vazirmatn-Light.ttf")
         bottom.add_widget(textbar)
