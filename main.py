@@ -392,7 +392,7 @@ class screen(FloatLayout):
                     def refpress(message,instance,ref):
                         if ref=="copy":
                             Clipboard.copy(texttt)
-                            instance.text=f"You:\{usermt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
+                            instance.text=f"You:\n{usermt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
                     messagebubble.bind(on_ref_press=partial(refpress,texttt))
                     self.layout.add_widget(messagebubble)
                     messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
@@ -655,7 +655,7 @@ class screen(FloatLayout):
 
 
 
-         def updatebottom(instance, value):
+        def updatebottom(instance, value):
             bottom.bg.pos = bottom.pos
             bottom.bg.size = bottom.size
 
