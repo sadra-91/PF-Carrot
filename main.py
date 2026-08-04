@@ -235,7 +235,7 @@ class screen(FloatLayout):
             height=275,
             padding=(15,15,15,60)
         )
-        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=15,spacing=15,size_hint_x=0.8)
+        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=15,spacing=15,size_hint_x=0.9)
         with bottom.canvas.before:
             Color(58/255,70/255,143/255,0.45)
             bottom.bg = RoundedRectangle(
