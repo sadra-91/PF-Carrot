@@ -235,11 +235,11 @@ class screen(FloatLayout):
             height=275,
             padding=(15,15,15,60)
         )
-        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=15,spacing=15,size_hint_x=0.9)
+        bottom=BoxLayout(size_hint_y=None,height=220,orientation="horizontal",padding=(40),spacing=15,size_hint_x=0.9)
         with bottom.canvas.before:
-            Color(58/255,70/255,143/255,0.45)
+            Color(58/255,70/255,143/255,0.6)
             bottom.bg = RoundedRectangle(
-                radius=[50]
+                radius=[65]
             )
         bottomcontainer.add_widget(bottom)
         main.add_widget(header)
@@ -507,7 +507,7 @@ class screen(FloatLayout):
             showtoast("New Chat Opened")
         newcb.bind(on_press=newchattt)
         x=0
-        label=Label(text="welcome...how can I help you?",color=(255/255,255/255,255/255,1),font_size=sp(50),font_name="calibril.ttf")
+        label=Label(text="welcome...how can I help you?",color=(255/255,255/255,255/255,1),font_size=sp(15),font_name="calibril.ttf")
         messages.add_widget(label)
         textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=True,padding=[15,10,15,10],size_hint=(1,1),font_size=36,font_name="Vazirmatn-Light.ttf")
         bottom.add_widget(textbar)
