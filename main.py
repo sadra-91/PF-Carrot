@@ -50,8 +50,8 @@ def set_system_bars(dt):
     activity = PythonActivity.mActivity
     window = activity.getWindow()
 
-    window.setStatusBarColor(AndroidColor.parseColor("#0b1020"))
-    window.setNavigationBarColor(AndroidColor.parseColor("#0b1020"))
+    window.setStatusBarColor(AndroidColor.parseColor("#030512"))
+    window.setNavigationBarColor(AndroidColor.parseColor("#0B2EA8"))
 
 LabelBase.register(
     name="Candara",
@@ -226,18 +226,18 @@ class screen(FloatLayout):
 
         main=GridLayout(rows=3) 
         self.add_widget(main)
-        header=BoxLayout(size_hint_y=None,height=170,padding=(15,25,15,15))
+        header=BoxLayout(size_hint_y=None,height=170,padding=(15,25,25,15))
         messages=BoxLayout()
         bottomcontainer = AnchorLayout(
             anchor_x="center",
             anchor_y="bottom",
             size_hint_y=None,
-            height=100,
-            padding=(15,15,15,30)
+            height=275,
+            padding=(15,15,15,60)
         )
-        bottom=BoxLayout(size_hint_y=None,height=100,orientation="horizontal",padding=15,spacing=15,size_hint_x=0.8)
+        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=15,spacing=15,size_hint_x=0.8)
         with bottom.canvas.before:
-            Color(58/255,70/255,143/255,0.6)
+            Color(58/255,70/255,143/255,0.45)
             bottom.bg = RoundedRectangle(
                 radius=[50]
             )
@@ -507,7 +507,7 @@ class screen(FloatLayout):
             showtoast("New Chat Opened")
         newcb.bind(on_press=newchattt)
         x=0
-        label=Label(text="welcome...how can I help you?",color=(255/255,255/255,255/255,1),font_size=90,font_name="calibril.ttf")
+        label=Label(text="welcome...how can I help you?",color=(255/255,255/255,255/255,1),font_size=sp(50),font_name="calibril.ttf")
         messages.add_widget(label)
         textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=True,padding=[15,10,15,10],size_hint=(1,1),font_size=36,font_name="Vazirmatn-Light.ttf")
         bottom.add_widget(textbar)
