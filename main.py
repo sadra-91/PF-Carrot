@@ -236,7 +236,7 @@ class screen(FloatLayout):
         )
         scroll2.add_widget(readypbox)
         with readypbox.canvas.after:
-            color(0.4,0.,40.4,1)
+            Color(0.4,0.,40.4,1)
             readypbox.line=Line()
         def chosepro(text):
             textbar.text=text
