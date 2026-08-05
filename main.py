@@ -224,7 +224,17 @@ class screen(FloatLayout):
             Color(0.4,0.4,0.4,1)
             header.line=Line()
         messages=BoxLayout()
-        readypbox=BoxLayout(size_hint_y=None,height=100,orientation="horizontal",padding=(10,10,10,10,spacing=10)
+        scroll2 = ScrollView(
+            size_hint_y=None,
+            height=100,
+            do_scroll_x=True,
+            do_scroll_y=False
+        )
+        readypbox=BoxLayout(size_hint_y=None,height=100,orientation="horizontal",padding=(10,10,10,10),spacing=10)
+        readypbox.bind(
+            minimum_width=readypbox.setter("width")
+        )
+        scroll2.add_widget(readypbox)
         with readypbox.canvas.after:
             color(0.4,0.,40.4,1)
             readypbox.line=Line()
@@ -234,7 +244,7 @@ class screen(FloatLayout):
         readyprompts=["Hello there","Recommand me a song","suggest a movie","Tell me a joke","Give me a fact","recommand some foods"]
         for i in readyprompts:
             texttt=i
-            promptb=Button(text=i,background_color=(1,1,1,1),font_size=46,font_name="Candara",background_normal="",background_down="")
+            promptb=Button(text=i,background_color=(1,1,1,1),font_size=46,font_name="Candara",background_normal="",background_down="",size_hint=(None,None),width=300,height=80)
             with promptb.canvas.before:
                 Color(30/255,42/255,86/255,0.8)
                 promptbg = RoundedRectangle(
@@ -274,7 +284,7 @@ class screen(FloatLayout):
         bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=(15,15,15,15),spacing=10)
         main.add_widget(header)
         main.add_widget(messages)
-        main.add_widget(readypbox)
+        main.add_widget(scroll2)
         main.add_widget(bottom)
         with bottom.canvas.after:
             Color(0.4,0.4,0.4,1)
