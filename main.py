@@ -50,8 +50,8 @@ def set_system_bars(dt):
     activity = PythonActivity.mActivity
     window = activity.getWindow()
 
-    window.setStatusBarColor(AndroidColor.parseColor("#030512"))
-    window.setNavigationBarColor(AndroidColor.parseColor("#0B2EA8"))
+    window.setStatusBarColor(AndroidColor.parseColor("#0b1020"))
+    window.setNavigationBarColor(AndroidColor.parseColor("#0b1020"))
 
 LabelBase.register(
     name="Candara",
@@ -216,40 +216,74 @@ class aianswer(Thread):
             
 class screen(FloatLayout):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs) 
-        with self.canvas.before:
-            self.bg = Rectangle(
-                source="gradient.png",
-                pos=self.pos,
-                size=self.size
-            )
-
+        super().__init__(**kwargs)  
         main=GridLayout(rows=3) 
         self.add_widget(main)
-        header=BoxLayout(size_hint_y=None,height=170,padding=(15,25,25,15))
+        header=BoxLayout(size_hint_y=None,height=200)
+        with header.canvas.after:
+            Color(0.4,0.4,0.4,1)
+            header.line=Line()
         messages=BoxLayout()
-        bottomcontainer = AnchorLayout(
-            anchor_x="center",
-            anchor_y="bottom",
-            size_hint_y=None,
-            height=275,
-            padding=(15,15,15,60)
-        )
-        bottom=BoxLayout(size_hint_y=None,height=220,orientation="horizontal",padding=(40),spacing=15,size_hint_x=0.9)
-        with bottom.canvas.before:
-            Color(58/255,70/255,143/255,0.6)
-            bottom.bg = RoundedRectangle(
-                radius=[80]
+        readypbox=BoxLayout(size_hint_y=None,height=100,orientation="horizontal",padding=(10,10,10,10,spacing=10)
+        with readypbox.canvas.after:
+            color(0.4,0.,40.4,1)
+            readypbox.line=Line()
+        def chosepro(text):
+            textbar.text=text
+            sendmessage()
+        readyprompts=["Hello there","Recommand me a song","suggest a movie","Tell me a joke","Give me a fact","recommand some foods"]
+        for i in readyprompts:
+            texttt=i
+            promptb=Button(text=i,background_color=(1,1,1,1),font_size=46,font_name="Candara",background_normal="",background_down="")
+            with promptb.canvas.before:
+                Color(30/255,42/255,86/255,0.8)
+                promptbg = RoundedRectangle(
+                    pos=promptb.pos,
+                    size=promptb.size,
+                    radius=[40]
+                )
+                Color(0.45, 0.45, 0.45, 0.8)
+                border = Line(
+                    rounded_rectangle=(
+                        promptb.x,
+                        promptb.y,
+                        promptb.width,
+                        promptb.height,
+                        20
+                    ),
+                    width=1
+                )
+            def updatebutton(instance, value):
+                promptbg.pos = instance.pos
+                promptbg.size = instance.size
+                border.rounded_rectangle = (
+                    instance.x,
+                    instance.y,
+                    instance.width,
+                    instance.height,
+                    20
+                )
+            promptb.bind(pos=updatebutton, size=updatebutton)
+            promptb.bind(
+                size=lambda instance, value:
+                setattr(instance,"text_size",(instance.width-40,instance.height))
             )
-        bottomcontainer.add_widget(bottom)
+            promptb.bind(on_press=partial(chosepro,texttt))
+            readypbox.add_widget(promptb)
+            
+        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=(15,15,15,15),spacing=10)
         main.add_widget(header)
         main.add_widget(messages)
-        main.add_widget(bottomcontainer)
-        sidebb=Button(text="",size_hint=(None,None),width=100,height=100,
+        main.add_widget(readypbox)
+        main.add_widget(bottom)
+        with bottom.canvas.after:
+            Color(0.4,0.4,0.4,1)
+            bottom.line=Line()
+        sidebb=Button(text="",size_hint=(None,None),width=140,height=180,
         background_normal="",
         background_disabled_normal="",
         background_color=(0,0,0,0))
-        sideimage=Image(source="side2.png",size_hint=(None,None),size=(100, 100),allow_stretch=True,keep_ratio=True,pos=sidebb.pos)
+        sideimage=Image(source="side2.png",size_hint=(None,None),size=(140, 140),allow_stretch=True,keep_ratio=True,pos=sidebb.pos)
         sidebb.add_widget(sideimage)
         header.add_widget(sidebb)
         overlay=Overlay()
@@ -392,7 +426,7 @@ class screen(FloatLayout):
                     def refpress(message,instance,ref):
                         if ref=="copy":
                             Clipboard.copy(texttt)
-                            instance.text=f"You:\n{usermt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
+                            instance.text=f"You:\{usermt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
                     messagebubble.bind(on_ref_press=partial(refpress,texttt))
                     self.layout.add_widget(messagebubble)
                     messagebubble.bind(texture_size=lambda i,v:setattr(i,"height",v[1]+20))
@@ -446,7 +480,7 @@ class screen(FloatLayout):
             fichatname=fix(chatname)
             chatb=Button(text=f"\n{fichatname}\n[color=bebebe]{chatcrtime}[/color]\n",
             size_hint=(1, None),
-            height=60,
+            height=90,
             background_normal="",
             background_down="",
             background_color=(0, 0, 0, 0),
@@ -464,6 +498,18 @@ class screen(FloatLayout):
             chatb.bind(size=lambda i, v: setattr(i, "text_size", (i.width - 100, i.height+200)))
             chatb.bind(on_press=partial(showchat,chatid))
             sidebar.layout.add_widget(chatb)
+            with chatb.canvas.after:
+                Color(0.5, 0.5, 0.5, 0.4)
+                divider = Line(width=1)
+            def update_(*args):
+                divider.points = [
+                    chatb.x + chatb.width * 0.01,
+                    chatb.y,
+                    chatb.x + chatb.width * 0.99,
+                    chatb.y
+                ]
+            chatb.bind(pos=update,size=update)
+
         modelsettings.bind(
             size=lambda instance, value:
             setattr(instance, "text_size", (instance.width - 20, instance.height))
@@ -482,13 +528,9 @@ class screen(FloatLayout):
             self.add_widget(sidebar)
             Animation(x=0,d=0.5,t="out_quart").start(sidebar)
         sidebb.bind(on_press=showsb)
-        logo=Label(text="PF-Carrot",color=(1,1,1),font_size=62,font_name="calibri.ttf",halign="left",size_hint_x=1,valign="middle")
-        logo.bind(
-            size=lambda instance, value:
-            setattr(instance, "text_size", (instance.width - 20, instance.height))
-        )
+        logo=Label(text="PF-Carrot",color=(255/255,69/255,0/255,1),font_size=100,font_name="timesbd.ttf",bold=True)
         header.add_widget(logo)
-        newcb=Button(text="",size_hint=(None,None),width=140,height=140,
+        newcb=Button(text="",size_hint=(None,None),width=140,height=180,
         background_normal="",
         background_disabled_normal="",
         background_color=(0,0,0,0))
@@ -507,10 +549,16 @@ class screen(FloatLayout):
             showtoast("New Chat Opened")
         newcb.bind(on_press=newchattt)
         x=0
-        label=Label(text="welcome...how can I help you?",color=(255/255,255/255,255/255,1),font_size=sp(25),font_name="calibril.ttf")
+        label=Label(text="Welcome...How can I help u?",color=(255/255,255/255,255/255,1),font_size=60,font_name="georgia.ttf")
         messages.add_widget(label)
+        textcontainer=FloatLayout(size_hint=(1,None),height=140)
+        with textcontainer.canvas.before:
+            Color(0.5,0.5,0.5,1)
+            textcontainer.border=Line(rounded_rectangle=(0,0,0,0,20),width=1.5)
+            Color(30/255,42/255,86/255,0.8)
+            textcontainer.bg=RoundedRectangle(radius=[20])
         textbar=TextInput(hint_text="Type a message...",background_color=(0,0,0,0),foreground_color=(1,1,1,1),cursor_color=(1,1,1,1),hint_text_color=(0.7,0.7,0.7,1),multiline=True,padding=[15,10,15,10],size_hint=(1,1),font_size=36,font_name="Vazirmatn-Light.ttf")
-        bottom.add_widget(textbar)
+        textcontainer.add_widget(textbar)
         def getkeyboardh():
             rect = Rect()
             view.getWindowVisibleDisplayFrame(rect)
@@ -632,9 +680,24 @@ class screen(FloatLayout):
         sendimage=Image(source="send.png",size_hint=(None,None),size=(140, 140),allow_stretch=True,keep_ratio=True,pos=send.pos)
         answeringi=Image(source="answering.png",size_hint=(None,None),size=(70, 70),allow_stretch=True,keep_ratio=True,pos=send.pos)
         send.add_widget(sendimage)
+        bottom.add_widget(textcontainer)
         bottom.add_widget(send)
 
-
+        def updatehl(instance,value):
+            x,y=instance.pos
+            w,h=instance.size
+            instance.line.points=[x,y,x+w,y]
+        header.bind(pos=updatehl,size=updatehl)
+        def updateb(instance, value):
+            x,y=instance.pos
+            w,h=instance.size
+            instance.line.points=[x,y+h,x+w,y+h]
+        bottom.bind(pos=updateb,size=updateb)
+        def updaterep(instance,value):
+            x,y=instance.pos
+            w,h=instance.size
+            instance.line.points=[x,y+h,x+w,y+h]
+        readypbox.bind(pos=updaterep,size=updaterep)
         def centerimage(instance, value):
             sendimage.center = instance.center
             answeringi.center=instance.center
@@ -653,13 +716,18 @@ class screen(FloatLayout):
             answeringiii.center=instance.center
         rewriteb.bind(pos=centerimage4,size=centerimage4)
 
+        def updatet(instance, value):
+            textcontainer.bg.pos = (instance.x,instance.y-5)
+            textcontainer.bg.size = (instance.width,instance.height+5)
+            textcontainer.border.rounded_rectangle = (
+                textcontainer.x,
+                textcontainer.y-5,
+                textcontainer.width,
+                textcontainer.height+5,
+                20
+            )
 
-
-        def updatebottom(instance, value):
-            bottom.bg.pos = bottom.pos
-            bottom.bg.size = bottom.size
-
-        bottom.bind(pos=updatebottom, size=updatebottom)
+        textcontainer.bind(pos=updatet, size=updatet)
         send.bind(on_press=sendmessage)
         def updatehj(instance,value):
             modelswi.bg.pos = modelswi.pos
@@ -672,14 +740,6 @@ class screen(FloatLayout):
                 20
             ) 
         modelswi.bind(pos=updatehj, size=updatehj) 
-        def updategr(self, *args):
-            self.bg.pos = self.pos
-            self.bg.size = self.size 
-        self.bind(pos=updategr, size=updategr) 
-        def updategr(self, *args):
-            self.bg.pos = self.pos
-            self.bg.size = self.size 
-        self.bind(pos=updategr, size=updategr)
 from kivy.clock import Clock
 
 class pfcApp(App):
