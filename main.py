@@ -230,6 +230,7 @@ class screen(FloatLayout):
             do_scroll_y=False
         )
         readypbox=BoxLayout(size_hint_y=None,height=100,orientation="horizontal",padding=(10,10,10,10),spacing=10)
+        readypbox.size_hint_x=None
         readypbox.bind(
             minimum_width=readypbox.setter("width")
         )
@@ -239,11 +240,10 @@ class screen(FloatLayout):
             readypbox.line=Line()
         def chosepro(text):
             textbar.text=text
-            sendmessage()
+            sendmessage(None)
         readyprompts=["Hello there","Recommand me a song","suggest a movie","Tell me a joke","Give me a fact","recommand some foods"]
         for i in readyprompts:
-            texttt=i
-            promptb=Button(text=i,background_color=(1,1,1,1),font_size=46,font_name="Candara",background_normal="",background_down="",size_hint=(None,None),width=300,height=80)
+            promptb=Button(text=i,background_color=(1,1,1,1),font_size=36,font_name="Candara",background_normal="",background_down="",size_hint=(None,None),width=360,height=80)
             with promptb.canvas.before:
                 Color(30/255,42/255,86/255,0.8)
                 promptbg = RoundedRectangle(
@@ -277,7 +277,7 @@ class screen(FloatLayout):
                 size=lambda instance, value:
                 setattr(instance,"text_size",(instance.width-40,instance.height))
             )
-            promptb.bind(on_press=partial(chosepro,texttt))
+            promptb.bind(on_press=lambda instance,txt=i:chosepro(txt))
             readypbox.add_widget(promptb)
             
         bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=(15,15,15,15),spacing=10)
@@ -508,17 +508,18 @@ class screen(FloatLayout):
             chatb.bind(on_press=partial(showchat,chatid))
             sidebar.layout.add_widget(chatb)
             with chatb.canvas.after:
-                Color(0.5, 0.5, 0.5, 0.4)
+                Color(0.5,0.5,0.5,0.4)
                 divider = Line(width=1)
-            def update(*args):
-                divider.points = [
-                    chatb.x + chatb.width * 0.01,
-                    chatb.y,
-                    chatb.x + chatb.width * 0.99,
-                    chatb.y
-                ]
-            chatb.bind(pos=update,size=update)
 
+            def update(instance, value, div=divider):
+                div.points = [
+                    instance.x + instance.width*0.01,
+                    instance.y,
+                    instance.x + instance.width*0.99,
+                    instance.y
+                ]
+
+            chatb.bind(pos=update, size=update)
         modelsettings.bind(
             size=lambda instance, value:
             setattr(instance, "text_size", (instance.width - 20, instance.height))
@@ -592,7 +593,7 @@ class screen(FloatLayout):
                     Clipboard.copy(answert)
                     instance.text=f"Carrot:\n{answert}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
             self.answerl.bind(on_ref_press=partial(responserefp,answer))
-        def sendmessage(instance):
+        def sendmessage(instance=None):
             send.unbind(on_press=sendmessage)
             send.remove_widget(sendimage)
             send.add_widget(answeringi)
