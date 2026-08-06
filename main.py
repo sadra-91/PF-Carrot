@@ -40,6 +40,7 @@ currentchatid=None
 currentmodel="llama3.1:8b"
 urlt=""
 lastmodel=""
+print("start")
 
 @run_on_ui_thread
 def set_system_bars(dt):
