@@ -511,7 +511,7 @@ class screen(FloatLayout):
             with chatb.canvas.after:
                 Color(0.5, 0.5, 0.5, 0.4)
                 divider = Line(width=1)
-            def update_(*args):
+            def update(*args):
                 divider.points = [
                     chatb.x + chatb.width * 0.01,
                     chatb.y,
