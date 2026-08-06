@@ -1,6 +1,5 @@
 from kivy.config import Config
 Config.set('graphics', 'fullscreen','auto')
-
 import requests
 import sqlite3
 import re
@@ -217,7 +216,7 @@ class aianswer(Thread):
 class screen(FloatLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)  
-        main=GridLayout(rows=3) 
+        main=GridLayout(rows=4) 
         self.add_widget(main)
         header=BoxLayout(size_hint_y=None,height=200)
         with header.canvas.after:
