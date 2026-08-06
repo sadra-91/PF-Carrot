@@ -41,7 +41,7 @@ currentmodel="llama3.1:8b"
 urlt=""
 lastmodel=""
 print("start")
-print("start2")
+print("start5")
 
 @run_on_ui_thread
 def set_system_bars(dt):
