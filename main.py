@@ -1,4 +1,4 @@
-from kivy.config import Config
+  from kivy.config import Config
 Config.set('graphics', 'fullscreen','auto')
 import requests
 import sqlite3
@@ -231,7 +231,7 @@ class screen(FloatLayout):
             do_scroll_x=True,
             do_scroll_y=False
         )
-        readypbox=BoxLayout(size_hint_y=None,height=100,orientation="horizontal",padding=(10,10,10,10),spacing=10)
+        readypbox=BoxLayout(size_hint_y=None,height=100,orientation="horizontal",padding=(10,10,10,10),spacing=25)
         readypbox.size_hint_x=None
         readypbox.bind(
             minimum_width=readypbox.setter("width")
@@ -245,7 +245,7 @@ class screen(FloatLayout):
             sendmessage(None)
         readyprompts=["Hello there","Recommand me a song","suggest a movie","Tell me a joke","Give me a fact","recommand some foods"]
         for i in readyprompts:
-            promptb=Button(text=i,background_color=(1,1,1,1),font_size=36,font_name="Candara",background_normal="",background_down="",size_hint=(None,None),width=360,height=80)
+            promptb=Button(text=i,background_normal="",background_down="",background_color=(0,0,0,0),color=(1,1,1,1),font_size=36,font_name="Candara",size_hint=(None,None),width=360,height=80,valign="middle",halign="center")
             with promptb.canvas.before:
                 Color(30/255,42/255,86/255,0.8)
                 promptbg = RoundedRectangle(
@@ -264,10 +264,10 @@ class screen(FloatLayout):
                     ),
                     width=1
                 )
-            def updatebutton(instance, value):
-                promptbg.pos = instance.pos
-                promptbg.size = instance.size
-                border.rounded_rectangle = (
+            def updatebutton(instance, value,bg=promptbg,br=border):
+                bg.pos = instance.pos
+                bg.size = instance.size
+                br.rounded_rectangle = (
                     instance.x,
                     instance.y,
                     instance.width,
@@ -282,7 +282,7 @@ class screen(FloatLayout):
             promptb.bind(on_press=lambda instance,txt=i:chosepro(txt))
             readypbox.add_widget(promptb)
             
-        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=(15,15,15,15),spacing=10)
+        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=(20,15,20,15),spacing=20)
         main.add_widget(header)
         main.add_widget(messages)
         main.add_widget(scroll2)
@@ -511,14 +511,16 @@ class screen(FloatLayout):
             sidebar.layout.add_widget(chatb)
             with chatb.canvas.after:
                 Color(0.5,0.5,0.5,0.4)
-                divider = Line(width=1)
+                divider = Line(width=1.5)
 
             def update(instance, value, div=divider):
+                line_y = instance.y - 10
+
                 div.points = [
-                    instance.x + instance.width*0.01,
-                    instance.y,
-                    instance.x + instance.width*0.99,
-                    instance.y
+                    instance.x + instance.width * 0.01,
+                    line_y,
+                    instance.x + instance.width * 0.99,
+                    line_y
                 ]
 
             chatb.bind(pos=update, size=update)
