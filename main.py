@@ -231,7 +231,7 @@ class screen(FloatLayout):
             do_scroll_x=True,
             do_scroll_y=False
         )
-        readypbox=BoxLayout(size_hint_y=None,height=100,orientation="horizontal",padding=(10,10,10,10),spacing=25)
+        readypbox=BoxLayout(size_hint_y=None,height=110,orientation="horizontal",padding=(15,15,15,15),spacing=25)
         readypbox.size_hint_x=None
         readypbox.bind(
             minimum_width=readypbox.setter("width")
@@ -245,7 +245,7 @@ class screen(FloatLayout):
             sendmessage(None)
         readyprompts=["Hello there","Recommand me a song","suggest a movie","Tell me a joke","Give me a fact","recommand some foods"]
         for i in readyprompts:
-            promptb=Button(text=i,background_normal="",background_down="",background_color=(0,0,0,0),color=(1,1,1,1),font_size=36,font_name="Candara",size_hint=(None,None),width=360,height=80,valign="middle",halign="center")
+            promptb=Button(text=i,background_normal="",background_down="",background_color=(0,0,0,0),color=(1,1,1,1),font_size=36,font_name="Candara",size_hint=(None,None),width=400,height=80,valign="middle",halign="center")
             with promptb.canvas.before:
                 Color(30/255,42/255,86/255,0.8)
                 promptbg = RoundedRectangle(
@@ -253,14 +253,14 @@ class screen(FloatLayout):
                     size=promptb.size,
                     radius=[40]
                 )
-                Color(0.45, 0.45, 0.45, 0.8)
+                Color(0.4, 0.4, 0.4, 1)
                 border = Line(
                     rounded_rectangle=(
                         promptb.x,
                         promptb.y,
                         promptb.width,
                         promptb.height,
-                        20
+                        40
                     ),
                     width=1
                 )
