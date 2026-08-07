@@ -1,4 +1,4 @@
-  from kivy.config import Config
+from kivy.config import Config
 Config.set('graphics', 'fullscreen','auto')
 import requests
 import sqlite3
