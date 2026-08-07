@@ -227,11 +227,11 @@ class screen(FloatLayout):
         messages=BoxLayout()
         scroll2 = ScrollView(
             size_hint_y=None,
-            height=100,
+            height=140,
             do_scroll_x=True,
             do_scroll_y=False
         )
-        readypbox=BoxLayout(size_hint_y=None,height=160,orientation="horizontal",padding=(20,40,20,40),spacing=12)
+        readypbox=BoxLayout(size_hint_y=None,height=140,orientation="horizontal",padding=(20,30,20,30),spacing=12)
         readypbox.size_hint_x=None
         readypbox.bind(
             minimum_width=readypbox.setter("width")
