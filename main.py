@@ -231,7 +231,7 @@ class screen(FloatLayout):
             do_scroll_x=True,
             do_scroll_y=False
         )
-        readypbox=BoxLayout(size_hint_y=None,height=120,orientation="horizontal",padding=(20,20,20,20),spacing=25)
+        readypbox=BoxLayout(size_hint_y=None,height=160,orientation="horizontal",padding=(20,40,20,40),spacing=12)
         readypbox.size_hint_x=None
         readypbox.bind(
             minimum_width=readypbox.setter("width")
