@@ -231,14 +231,14 @@ class screen(FloatLayout):
             do_scroll_x=True,
             do_scroll_y=False
         )
-        readypbox=BoxLayout(size_hint_y=None,height=110,orientation="horizontal",padding=(15,15,15,15),spacing=25)
+        readypbox=BoxLayout(size_hint_y=None,height=120,orientation="horizontal",padding=(20,20,20,20),spacing=25)
         readypbox.size_hint_x=None
         readypbox.bind(
             minimum_width=readypbox.setter("width")
         )
         scroll2.add_widget(readypbox)
         with readypbox.canvas.after:
-            Color(0.4,0.,40.4,1)
+            Color(0.4,0.4,0.4,1)
             readypbox.line=Line()
         def chosepro(text):
             textbar.text=text
@@ -272,7 +272,7 @@ class screen(FloatLayout):
                     instance.y,
                     instance.width,
                     instance.height,
-                    20
+                    40
                 )
             promptb.bind(pos=updatebutton, size=updatebutton)
             promptb.bind(
@@ -282,7 +282,7 @@ class screen(FloatLayout):
             promptb.bind(on_press=lambda instance,txt=i:chosepro(txt))
             readypbox.add_widget(promptb)
             
-        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=(20,15,20,15),spacing=20)
+        bottom=BoxLayout(size_hint_y=None,height=200,orientation="horizontal",padding=(25,15,20,15),spacing=20)
         main.add_widget(header)
         main.add_widget(messages)
         main.add_widget(scroll2)
