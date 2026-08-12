@@ -489,41 +489,50 @@ class screen(FloatLayout):
             chatcrtime=i[2]
             print(f"chat {chatid}\n-------------\nchat id:{chatid}\nchat name={chatname}\nchat created at:{chatcrtime}")
             fichatname=fix(chatname)
-            chatb=Button(text=f"\n{fichatname}\n[color=bebebe]{chatcrtime}[/color]\n",
-            size_hint=(1, None),
-            height=90,
-            background_normal="",
-            background_down="",
-            background_color=(0, 0, 0, 0),
-            color=(1, 1, 1, 1),
-            halign="left",
-            valign="middle",
-            text_size=(500, None),
-            font_name="Vazirmatn-Light.ttf",
-            font_size=42,
-            markup=True)
-            ###chatb.bind(
-            ###    size=lambda instance, value:
-            ###    setattr(instance, "text_size", (instance.width - 20, instance.height))
-            ###)
-            chatb.bind(size=lambda i, v: setattr(i, "text_size", (i.width - 100, i.height+200)))
-            chatb.bind(on_press=partial(showchat,chatid))
-            sidebar.layout.add_widget(chatb)
-            with chatb.canvas.after:
+            chatbox=BoxLayout(
+                orientation="vertical",
+                size_hint=(1,None),
+                height=120,
+                padding=(15,15,15,30)
+            )
+            with chatbox.canvas.before:
                 Color(0.5,0.5,0.5,0.4)
-                divider = Line(width=1.5)
-
-            def update(instance, value, div=divider):
-                line_y = instance.y - 10
-
-                div.points = [
-                    instance.x + instance.width * 0.01,
-                    line_y,
-                    instance.x + instance.width * 0.99,
-                    line_y
-                ]
-
-            chatb.bind(pos=update, size=update)
+                box_bg=RoundedRectangle(pos=chatbox.pos,size=chatbox.size,radius=[10])
+                Color(0.5,0.5,0.5,0.4)
+                box_border=Line(rounded_rectangle=(chatbox.x,chatbox.y,chatbox.width,chatbox.height,10),width=1.5)
+            def update_box(instance,value):
+                box_bg.pos=instance.pos
+                box_bg.size=instance.size
+                box_border.rounded_rectangle=(instance.x,instance.y,instance.width,instance.height,10)
+            chatbox.bind(pos=update_box,size=update_box)
+            chatb=Button(
+                text=f"\n{fichatname}\n[color=bebebe]{chatcrtime}[/color]\n",
+                size_hint=(1,1),
+                background_normal="",
+                background_down="",
+                background_color=(1,1,1,0),
+                color=(1,1,1,1),
+                halign="left",
+                valign="middle",
+                text_size=(None,None),
+                font_name="Vazirmatn-Light.ttf",
+                font_size=42,
+                markup=True
+            )
+            with chatb.canvas.before:
+                Color(0.2,0.6,1,1)
+                chat_bg=RoundedRectangle(pos=chatb.pos,size=chatb.size,radius=[12])
+                Color(0.5,0.5,0.5,1)
+                chat_border=Line(rounded_rectangle=(chatb.x,chatb.y,chatb.width,chatb.height,12),width=1.5)
+            def update_chat(instance,value):
+                chat_bg.pos=instance.pos
+                chat_bg.size=instance.size
+                chat_border.rounded_rectangle=(instance.x,instance.y,instance.width,instance.height,12)
+                instance.text_size=(instance.width-30,instance.height)
+            chatb.bind(pos=update_chat,size=update_chat)
+            chatb.bind(on_press=partial(showchat,chatid))
+            chatbox.add_widget(chatb)
+            sidebar.layout.add_widget(chatbox)
         modelsettings.bind(
             size=lambda instance, value:
             setattr(instance, "text_size", (instance.width - 20, instance.height))
