@@ -488,29 +488,33 @@ class screen(FloatLayout):
             chatname=i[1]
             chatcrtime=i[2]
             print(f"chat {chatid}\n-------------\nchat id:{chatid}\nchat name={chatname}\nchat created at:{chatcrtime}")
-            fichatname=fix(chatname)
             chatbox=BoxLayout(
-                orientation="vertical",
-                size_hint=(1,None),
-                height=120,
-                padding=(15,15,15,30)
+            orientation="vertical",
+            size_hint=(1,None),
+            height=135,
+            padding=(15,15,15,30)
             )
-            with chatbox.canvas.before:
+
+            with chatbox.canvas.after:
                 Color(0.5,0.5,0.5,0.4)
-                box_bg=RoundedRectangle(pos=chatbox.pos,size=chatbox.size,radius=[10])
-                Color(0.5,0.5,0.5,0.4)
-                box_border=Line(rounded_rectangle=(chatbox.x,chatbox.y,chatbox.width,chatbox.height,10),width=1.5)
-            def update_box(instance,value):
-                box_bg.pos=instance.pos
-                box_bg.size=instance.size
-                box_border.rounded_rectangle=(instance.x,instance.y,instance.width,instance.height,10)
-            chatbox.bind(pos=update_box,size=update_box)
+                divider=Line(width=1.5)
+            def update_divider(instance,value):
+                line_y=instance.y
+                divider.points=[
+                    instance.x+instance.width*0.01,
+                    line_y,
+                    instance.x+instance.width*0.99,
+                    line_y
+                ]
+
+            chatbox.bind(pos=update_divider,size=update_divider)
+
             chatb=Button(
                 text=f"\n{fichatname}\n[color=bebebe]{chatcrtime}[/color]\n",
                 size_hint=(1,1),
                 background_normal="",
                 background_down="",
-                background_color=(1,1,1,0),
+                background_color=(0.2,0.6,1,1),
                 color=(1,1,1,1),
                 halign="left",
                 valign="middle",
@@ -519,18 +523,44 @@ class screen(FloatLayout):
                 font_size=42,
                 markup=True
             )
+
             with chatb.canvas.before:
                 Color(0.2,0.6,1,1)
-                chat_bg=RoundedRectangle(pos=chatb.pos,size=chatb.size,radius=[12])
+                bg=RoundedRectangle(
+                    pos=chatb.pos,
+                    size=chatb.size,
+                    radius=[12]
+                )
                 Color(0.5,0.5,0.5,1)
-                chat_border=Line(rounded_rectangle=(chatb.x,chatb.y,chatb.width,chatb.height,12),width=1.5)
+                border=Line(
+                    rounded_rectangle=(
+                        chatb.x,
+                        chatb.y,
+                        chatb.width,
+                        chatb.height,
+                        12
+                    ),
+                    width=1.5
+                )
+
             def update_chat(instance,value):
-                chat_bg.pos=instance.pos
-                chat_bg.size=instance.size
-                chat_border.rounded_rectangle=(instance.x,instance.y,instance.width,instance.height,12)
-                instance.text_size=(instance.width-30,instance.height)
+                bg.pos=instance.pos
+                bg.size=instance.size
+                border.rounded_rectangle=(
+                    instance.x,
+                    instance.y,
+                    instance.width,
+                    instance.height,
+                    12
+                )
+                instance.text_size=(
+                    instance.width-30,
+                    instance.height
+                )
+
             chatb.bind(pos=update_chat,size=update_chat)
             chatb.bind(on_press=partial(showchat,chatid))
+
             chatbox.add_widget(chatb)
             sidebar.layout.add_widget(chatbox)
         modelsettings.bind(
