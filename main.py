@@ -510,7 +510,7 @@ class screen(FloatLayout):
             chatbox.bind(pos=update_divider,size=update_divider)
 
             chatb=Button(
-                text=f"\n{fichatname}\n[color=bebebe]{chatcrtime}[/color]\n",
+                text=f"\n{chatname}\n[color=bebebe]{chatcrtime}[/color]\n",
                 size_hint=(1,1),
                 background_normal="",
                 background_down="",
