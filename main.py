@@ -491,8 +491,8 @@ class screen(FloatLayout):
             chatbox=BoxLayout(
             orientation="vertical",
             size_hint=(1,None),
-            height=135,
-            padding=(15,15,15,30)
+            height=170,
+            padding=(120,20,20,40)
             )
 
             with chatbox.canvas.after:
@@ -525,11 +525,11 @@ class screen(FloatLayout):
             )
 
             with chatb.canvas.before:
-                Color(0.2,0.6,1,1)
+                Color(30/255,42/255,86/255,0.8)
                 bg=RoundedRectangle(
                     pos=chatb.pos,
                     size=chatb.size,
-                    radius=[12]
+                    radius=[30]
                 )
                 Color(0.5,0.5,0.5,1)
                 border=Line(
@@ -538,7 +538,7 @@ class screen(FloatLayout):
                         chatb.y,
                         chatb.width,
                         chatb.height,
-                        12
+                        30
                     ),
                     width=1.5
                 )
