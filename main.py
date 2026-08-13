@@ -108,7 +108,7 @@ class Sidebar(ScrollView):
         self.layout=BoxLayout(
             orientation="vertical",
             size_hint=(1,None),
-            spacing=20
+            spacing=50
         )
         self.layout.bind(minimum_height=self.layout.setter("height"))
 
@@ -147,7 +147,6 @@ class aianswer(Thread):
         "content":self.command
         }
         ]
-
         if self.history:
             for item in self.history:
                 role,msg=item.split(":",1)
@@ -174,10 +173,8 @@ class aianswer(Thread):
             answer=response.json()["message"]["content"]
             history.append(f"user:{self.message}")
             history.append(f"assistant:{answer}")
-
             conn=sqlite3.connect("database.db")
             cursor=conn.cursor()
-
             global currentchatid
 
             if(currentchatid==None):
@@ -235,9 +232,8 @@ class aianswer(Thread):
 
 class screen(FloatLayout):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        main=GridLayout(rows=4)
+        super().__init__(**kwargs)  
+        main=GridLayout(rows=4) 
         self.add_widget(main)
 
         header=BoxLayout(size_hint_y=None,height=200)
@@ -310,7 +306,6 @@ class screen(FloatLayout):
                     size=promptb.size,
                     radius=[40]
                 )
-
                 Color(0.4, 0.4, 0.4, 1)
                 border = Line(
                     rounded_rectangle=(
@@ -388,7 +383,6 @@ class screen(FloatLayout):
         )
 
         sidebb.add_widget(sideimage)
-
         header.add_widget(sidebb)
 
         overlay=Overlay()
@@ -408,9 +402,7 @@ class screen(FloatLayout):
                 background_color=(0.2, 0.2, 0.2, 0.9),
                 auto_dismiss=False
             )
-
             popup.open()
-
             Clock.schedule_once(
                 lambda dt: popup.dismiss(),
                 duration
@@ -444,7 +436,6 @@ class screen(FloatLayout):
                 rounded_rectangle=(0,0,0,0,20),
                 width=1.5
             )
-
             Color(30/255,42/255,86/255,0.8)
             modelswi.bg=RoundedRectangle(radius=[20])
 
@@ -581,20 +572,16 @@ class screen(FloatLayout):
             if self.firstmessage:
                 self.mlist=ScrollView()
                 self.mlist.opacity=1
-
                 self.layout=BoxLayout(
                     orientation="vertical",
                     size_hint_y=None,
                     spacing=20,
                     padding=(10,10,10,10)
                 )
-
                 self.layout.width=messages.width
-
                 self.layout.bind(
                     minimum_height=self.layout.setter("height")
                 )
-
                 self.mlist.add_widget(self.layout)
                 messages.add_widget(self.mlist)
                 messages.remove_widget(label)
@@ -766,16 +753,13 @@ class screen(FloatLayout):
             chatbox=BoxLayout(
                 orientation="vertical",
                 size_hint=(1,None),
-                height=150,
+                height=190,
                 padding=(20,15,20,15)
             )
 
             with chatbox.canvas.after:
                 Color(0.5,0.5,0.5,0.4)
-
-                chatdivider=Line(
-                    width=1.5
-                )
+                chatdivider=Line(width=1.5)
 
             def update_divider(
                 instance,
@@ -783,7 +767,6 @@ class screen(FloatLayout):
                 divider=chatdivider
             ):
                 line_y=instance.y
-
                 divider.points=[
                     instance.x+instance.width*0.02,
                     line_y,
@@ -852,7 +835,7 @@ class screen(FloatLayout):
 
                 instance.text_size=(
                     instance.width-30,
-                    instance.height
+                    instance.height-20
                 )
 
             chatb.bind(
@@ -879,25 +862,13 @@ class screen(FloatLayout):
         )
 
         def hidesb(instance):
-            Animation(
-                opacity=0,
-                d=0.25
-            ).start(overlay)
-
+            Animation(opacity=0,d=0.25).start(overlay)
             self.remove_widget(overlay)
-
-            Animation(
-                x=-sidebar.width,
-                d=0.5,
-                t="out_quart"
-            ).start(sidebar)
-
+            Animation(x=-sidebar.width,d=0.5,t="out_quart").start(sidebar)
             Clock.schedule_once(
-                lambda dt:
-                setattr(overlay,"disabled",True),
+                lambda dt:setattr(overlay,"disabled",True),
                 0.25
             )
-
             self.remove_widget(sidebar)
 
         overlay.bind(on_press=hidesb)
@@ -905,19 +876,9 @@ class screen(FloatLayout):
         def showsb(instance):
             self.add_widget(overlay)
             overlay.disabled=False
-
-            Animation(
-                opacity=1,
-                d=0.2
-            ).start(overlay)
-
+            Animation(opacity=1,d=0.2).start(overlay)
             self.add_widget(sidebar)
-
-            Animation(
-                x=0,
-                d=0.5,
-                t="out_quart"
-            ).start(sidebar)
+            Animation(x=0,d=0.5,t="out_quart").start(sidebar)
 
         sidebb.bind(on_press=showsb)
 
@@ -1013,11 +974,8 @@ class screen(FloatLayout):
         def getkeyboardh():
             rect = Rect()
             view.getWindowVisibleDisplayFrame(rect)
-
             screenheight = view.getRootView().getHeight()
-
             keyboardheight = screenheight - rect.bottom
-
             return keyboardheight
 
         def onfocus(self,instance):
@@ -1030,32 +988,19 @@ class screen(FloatLayout):
 
         def exctractm(answer):
             send.bind(on_press=sendmessage)
-
             send.remove_widget(answeringi)
             send.add_widget(sendimage)
-
             self.event.cancel()
 
             bothtml=markdown(answer)
             botmt=fix(bothtml)
 
-            self.answerl.text=(
-                f"Carrot:\n"
-                f"{botmt}"
-                f"[ref=copy][color=bebebe]\n"
-                f"tap to copy[/color][/ref]"
-            )
+            self.answerl.text=f"Carrot:\n{botmt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
 
             def responserefp(answert,instance,ref):
                 if ref=="copy":
                     Clipboard.copy(answert)
-
-                    instance.text=(
-                        f"Carrot:\n"
-                        f"{answert}"
-                        f"[ref=copy][color=bebebe]\n"
-                        f"copied[/color][/ref]"
-                    )
+                    instance.text=f"Carrot:\n{answert}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
 
             self.answerl.bind(
                 on_ref_press=partial(
@@ -1066,7 +1011,6 @@ class screen(FloatLayout):
 
         def sendmessage(instance=None):
             send.unbind(on_press=sendmessage)
-
             send.remove_widget(sendimage)
             send.add_widget(answeringi)
 
@@ -1088,10 +1032,8 @@ class screen(FloatLayout):
                 )
 
                 self.mlist.add_widget(self.layout)
-
                 messages.add_widget(self.mlist)
                 messages.remove_widget(label)
-
                 self.firstmessage=False
 
             print(textbar.text)
@@ -1128,13 +1070,7 @@ class screen(FloatLayout):
             def refpress(message,instance,ref):
                 if ref=="copy":
                     Clipboard.copy(message)
-
-                    instance.text=(
-                        f"You:\n"
-                        f"{usermt}"
-                        f"[ref=copy][color=bebebe]\n"
-                        f"copied[/color][/ref]"
-                    )
+                    instance.text=f"You:\n{usermt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
 
             messagebubble.bind(
                 on_ref_press=partial(
@@ -1207,14 +1143,10 @@ class screen(FloatLayout):
 
         def rewritefinish(newp):
             send.bind(on_press=sendmessage)
-
             rewriteb.bind(on_press=rewrite)
-
             rewriteb.remove_widget(answeringiii)
             rewriteb.add_widget(rewritei)
-
             textbar.text=newp
-
             print(newp)
 
             global currentmodel
@@ -1223,7 +1155,6 @@ class screen(FloatLayout):
         def rewrite(self):
             send.unbind(on_press=sendmessage)
             rewriteb.unbind(on_press=rewrite)
-
             rewriteb.remove_widget(rewritei)
             rewriteb.add_widget(answeringiii)
 
@@ -1324,11 +1255,7 @@ class screen(FloatLayout):
         def updatehl(instance,value):
             x,y=instance.pos
             w,h=instance.size
-
-            instance.line.points=[
-                x,y,
-                x+w,y
-            ]
+            instance.line.points=[x,y,x+w,y]
 
         header.bind(
             pos=updatehl,
@@ -1338,11 +1265,7 @@ class screen(FloatLayout):
         def updateb(instance, value):
             x,y=instance.pos
             w,h=instance.size
-
-            instance.line.points=[
-                x,y+h,
-                x+w,y+h
-            ]
+            instance.line.points=[x,y+h,x+w,y+h]
 
         bottom.bind(
             pos=updateb,
@@ -1352,11 +1275,7 @@ class screen(FloatLayout):
         def updaterep(instance,value):
             x,y=instance.pos
             w,h=instance.size
-
-            instance.line.points=[
-                x,y+h,
-                x+w,y+h
-            ]
+            instance.line.points=[x,y+h,x+w,y+h]
 
         readypbox.bind(
             pos=updaterep,
@@ -1398,14 +1317,9 @@ class screen(FloatLayout):
         )
 
         def updatet(instance, value):
-            textcontainer.bg.pos=(instance.x,instance.y-5)
-
-            textcontainer.bg.size=(
-                instance.width,
-                instance.height+5
-            )
-
-            textcontainer.border.rounded_rectangle=(
+            textcontainer.bg.pos = (instance.x,instance.y-5)
+            textcontainer.bg.size = (instance.width,instance.height+5)
+            textcontainer.border.rounded_rectangle = (
                 textcontainer.x,
                 textcontainer.y-5,
                 textcontainer.width,
@@ -1423,10 +1337,9 @@ class screen(FloatLayout):
         )
 
         def updatehj(instance,value):
-            modelswi.bg.pos=modelswi.pos
-            modelswi.bg.size=modelswi.size
-
-            modelswi.border.rounded_rectangle=(
+            modelswi.bg.pos = modelswi.pos
+            modelswi.bg.size = modelswi.size
+            modelswi.border.rounded_rectangle = (
                 modelswi.x,
                 modelswi.y,
                 modelswi.width,
