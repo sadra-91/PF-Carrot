@@ -740,7 +740,7 @@ class screen(FloatLayout):
 
         chatslist=cursor.fetchall()
 
-        for chatid, chatname, chatcrtime in chatslist:
+        for chatid,chatname,chatcrtime in chatslist:
 
             print(
                 f"chat {chatid}\n"
@@ -754,7 +754,7 @@ class screen(FloatLayout):
                 orientation="vertical",
                 size_hint=(1,None),
                 height=190,
-                padding=(20,15,20,15)
+                padding=(20,10,20,25)
             )
 
             with chatbox.canvas.after:
