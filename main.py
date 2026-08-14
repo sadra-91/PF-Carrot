@@ -2,6 +2,7 @@ from kivy.config import Config
 Config.set('graphics', 'fullscreen','auto')
 import requests
 import sqlite3
+import json
 import re
 from kivy.app import App
 from functools import partial
@@ -135,12 +136,13 @@ class Sidebar(ScrollView):
 
 
 class aianswer(Thread):
-    def __init__(self,message,history,callback,command):
+    def __init__(self,message,history,callback,command,streamfu):
         super().__init__(daemon=True)
         self.message=message
         self.history=history
         self.callback=callback
         self.command=command
+        self.streamf=streamfu
         self.messages=[
         {
         "role":"system",
@@ -167,10 +169,26 @@ class aianswer(Thread):
                 json={
                     "model":currentmodel,
                     "messages":self.messages,
-                    "stream":False
-                }
+                    "stream":True
+                },
+                Stream=True
             )
-            answer=response.json()["message"]["content"]
+            response.raise_for_status()
+            answer = ""
+
+            for line in response.iter_lines(decode_unicode=True):
+                if not line:
+                    continue
+
+                data = json.loads(line)
+
+                if "message" in data:
+                    chunk = data["message"]["content"]
+                    answer += chunk
+                    Clock.schedule_once(
+                        lambda dt, text=answer: self.streamf(text)
+                    )
+
             history.append(f"user:{self.message}")
             history.append(f"assistant:{answer}")
             conn=sqlite3.connect("database.db")
@@ -985,66 +1003,58 @@ class screen(FloatLayout):
         textbar.bind(focus=onfocus)
 
         self.firstmessage=True
-
+        def stopthinking():
+            event = getattr(self, "event", None)
+            if event is not None:
+                event.cancel()
+                self.event = None
+        def streaming(text):
+            stopthinking()
+            self.answerl.text=f"Carrot:\n{text}"
         def exctractm(answer):
             send.bind(on_press=sendmessage)
             send.remove_widget(answeringi)
             send.add_widget(sendimage)
-            self.event.cancel()
-
             bothtml=markdown(answer)
             botmt=fix(bothtml)
-
             self.answerl.text=f"Carrot:\n{botmt}[ref=copy][color=bebebe]\ntap to copy[/color][/ref]"
-
             def responserefp(answert,instance,ref):
                 if ref=="copy":
                     Clipboard.copy(answert)
                     instance.text=f"Carrot:\n{answert}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
-
             self.answerl.bind(
                 on_ref_press=partial(
                     responserefp,
                     answer
                 )
             )
-
         def sendmessage(instance=None):
             send.unbind(on_press=sendmessage)
             send.remove_widget(sendimage)
             send.add_widget(answeringi)
-
             if self.firstmessage:
                 self.mlist=ScrollView()
                 self.mlist.opacity=1
-
                 self.layout=BoxLayout(
                     orientation="vertical",
                     size_hint_y=None,
                     spacing=20,
                     padding=(10,10,10,10)
                 )
-
                 self.layout.width=messages.width
-
                 self.layout.bind(
                     minimum_height=self.layout.setter("height")
                 )
-
                 self.mlist.add_widget(self.layout)
                 messages.add_widget(self.mlist)
                 messages.remove_widget(label)
                 self.firstmessage=False
-
             print(textbar.text)
-
             message=textbar.text
-
             right=AnchorLayout(
                 anchor_x="right",
                 anchor_y="center"
             )
-
             umhtml=markdown(message)
             usermt=fix(umhtml)
 
@@ -1059,19 +1069,16 @@ class screen(FloatLayout):
                 text_size=(self.layout.width-50,None),
                 font_name="Candara"
             )
-
             messagebubble.text=(
                 f"You:\n"
                 f"{usermt}"
                 f"[ref=copy][color=bebebe]\n"
                 f"tap to copy[/color][/ref]"
             )
-
             def refpress(message,instance,ref):
                 if ref=="copy":
                     Clipboard.copy(message)
                     instance.text=f"You:\n{usermt}[ref=copy][color=bebebe]\ncopied[/color][/ref]"
-
             messagebubble.bind(
                 on_ref_press=partial(
                     refpress,
@@ -1130,7 +1137,8 @@ class screen(FloatLayout):
                 message,
                 history,
                 exctractm,
-                command
+                command,
+                streaming
             ).start()
 
         answeringiii=Image(
