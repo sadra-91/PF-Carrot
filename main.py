@@ -171,7 +171,7 @@ class aianswer(Thread):
                     "messages":self.messages,
                     "stream":True
                 },
-                Stream=True
+                stream=True
             )
             response.raise_for_status()
             answer = ""
@@ -1012,6 +1012,7 @@ class screen(FloatLayout):
             stopthinking()
             self.answerl.text=f"Carrot:\n{text}"
         def exctractm(answer):
+            stopthinking()
             send.bind(on_press=sendmessage)
             send.remove_widget(answeringi)
             send.add_widget(sendimage)
