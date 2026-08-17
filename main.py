@@ -642,7 +642,7 @@ class screen(FloatLayout):
 
                     messagebubble=Label(
                         markup=True,
-                        font_size=50,
+                        font_size=70,
                         width=messages.width,
                         halign="right",
                         valign="middle",
@@ -680,7 +680,7 @@ class screen(FloatLayout):
                 else:
                     self.answerl=Label(
                         markup=True,
-                        font_size=50,
+                        font_size=70,
                         width=messages.width,
                         halign="left",
                         valign="middle",
