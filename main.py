@@ -38,11 +38,13 @@ Window.clearcolor = (11/255,16/255,32/255,1)
 Window.softinput_mode="below_target"
 history=[]
 currentchatid=None
-currentmodel="llama3.1:8b"
+currentmodel="deepseek-v4-flash"
 urlt=""
 lastmodel=""
 print("start")
 print("start566")
+apikey=requests.get("https://pf-c.ir/key.txt").text.strip()
+client = OpenAI(base_url="https://api.gapgpt.app/v1",api_key=apikey)
 
 @run_on_ui_thread
 def set_system_bars(dt):
@@ -164,27 +166,21 @@ class aianswer(Thread):
 
     def run(self):
         try:
-            response=requests.post(
-                urlt,
-                json={
-                    "model":currentmodel,
-                    "messages":self.messages,
-                    "stream":True
-                },
+            response=client.chat.completions.create(
+                model=currentmodel,
+                messages=self.messages,
                 stream=True
             )
-            response.raise_for_status()
-            answer = ""
+            answer=""
 
-            for line in response.iter_lines(decode_unicode=True):
-                if not line:
+            for chunk in response:
+                if not chunk.choices:
                     continue
 
-                data = json.loads(line)
+                content = chunk.choices[0].delta.content
 
-                if "message" in data:
-                    chunk = data["message"]["content"]
-                    answer += chunk
+                if content:
+                    answer += content
                     Clock.schedule_once(
                         lambda dt, text=answer: self.streamf(text)
                     )
@@ -484,11 +480,11 @@ class screen(FloatLayout):
         modelswi.add_widget(modellabel)
 
         items=[
-            "gemma3:1b",
-            "gemma3:4b",
-            "llama3.1:8b",
-            "gemma3:12b",
-            "qwen3:14b"
+            "gapgpt-qwen-3.8",
+            "gemini-3.1-flash-lite",
+            "deepseek-v4-flash",
+            "gpt-5-mini",
+            "qwen3-coder"
         ]
 
         for i in items:
@@ -530,35 +526,6 @@ class screen(FloatLayout):
             btn.bind(state=updatecolor)
             modelswi.add_widget(btn)
 
-        def onchanged(instance,value):
-            global urlt
-            urlt=value
-
-        urltextbar=TextInput(
-            hint_text="Enter the URL...",
-            background_color=(0,0,0,0),
-            size_hint=(1,None),
-            font_name="calibri.ttf",
-            font_size=40,
-            foreground_color=(1,1,1,1),
-            cursor_color=(1,1,1,1),
-            hint_text_color=(0.7,0.7,0.7,1),
-            multiline=False,
-            padding=[15,10,15,10],
-            x=modelsettings.x,
-            y=modelsettings.y+40
-        )
-
-        urltextbar.bind(text=onchanged)
-
-        urltextbar.bind(
-            size=lambda instance, value:
-            setattr(
-                instance,
-                "text_size",
-                (instance.width - 20, instance.height)
-            )
-        )
 
         roleplayp=Button(
             text="Role play",
@@ -642,7 +609,7 @@ class screen(FloatLayout):
 
                     messagebubble=Label(
                         markup=True,
-                        font_size=70,
+                        font_size=50,
                         width=messages.width,
                         halign="right",
                         valign="middle",
@@ -680,7 +647,7 @@ class screen(FloatLayout):
                 else:
                     self.answerl=Label(
                         markup=True,
-                        font_size=70,
+                        font_size=50,
                         width=messages.width,
                         halign="left",
                         valign="middle",
@@ -951,7 +918,7 @@ class screen(FloatLayout):
         x=0
 
         label=Label(
-            text="Welcome...How can I help u?",
+            text="Welcome...How can I help you?",
             color=(255/255,255/255,255/255,1),
             font_size=60,
             font_name="georgia.ttf"
