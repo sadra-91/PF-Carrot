@@ -20,7 +20,7 @@ android.permissions = INTERNET
 android.api = 34
 android.minapi = 24
 
-android.archs = armeabi-v7a,arm64-v8a
+android.archs = arm64-v8a
 
 android.accept_sdk_license = True
 android.allow_backup = True
