@@ -736,7 +736,7 @@ class screen(FloatLayout):
                 orientation="vertical",
                 size_hint=(1,None),
                 height=190,
-                padding=(20,25,20,10)
+                padding=(20,10,20,20)
             )
 
             with chatbox.canvas.after:
