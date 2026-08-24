@@ -14,7 +14,6 @@ jobs:
       ANDROID_API_LEVEL: 34
       ANDROID_HOME: /usr/local/lib/android/sdk
       ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
-      JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-8/x64
       BUILDOZER_WARN_ON_ROOT: 0
 
     steps:
@@ -52,34 +51,46 @@ jobs:
             build-essential \
             ccache
 
+      - name: Check Java
+        run: |
+          java -version
+          echo "JAVA_HOME=$JAVA_HOME"
+
+      - name: Check Android SDK
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          sdkmanager --version
+
+      - name: Install Android SDK components
+        run: |
+          yes | sdkmanager --licenses || true
+
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-34" \
+            "build-tools;34.0.0"
+
       - name: Upgrade pip
         run: |
           python -m pip install --upgrade pip==24.3.1
 
       - name: Install Cython
         run: |
-          pip install Cython==0.29.36
+          python -m pip install Cython==0.29.36
 
       - name: Install Buildozer
         run: |
-          pip install buildozer==1.6.0
+          python -m pip install buildozer==1.6.0
 
       - name: Show build environment
         run: |
-          echo "ANDROID_API_LEVEL=$ANDROID_API_LEVEL"
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-          echo "JAVA_HOME=$JAVA_HOME"
           python --version
           pip --version
+          cython --version
           buildozer --version
-
-      - name: Accept Android SDK licenses
-        run: |
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-
-          yes | sdkmanager --licenses || true
+          java -version
+          sdkmanager --version
 
       - name: Build APK
         run: |
