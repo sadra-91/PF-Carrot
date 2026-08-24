@@ -729,131 +729,115 @@ class screen(FloatLayout):
 
         def showsb(instance):
             conn=sqlite3.connect("database.db")
-        cursor=conn.cursor()
-        cursor.execute("""
-        CREATE TABLE IF NOT EXISTS chats(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        chatname TEXT,
-        date DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-        """)
-        conn.commit()
-        cursor.execute("""
-        SELECT id,chatname,date FROM chats
-        ORDER BY id
-        """)
-
-        chatslist=cursor.fetchall()
-
-        for chatid,chatname,chatcrtime in chatslist:
-
-            print(
-                f"chat {chatid}\n"
-                f"-------------\n"
-                f"chat id:{chatid}\n"
-                f"chat name={chatname}\n"
-                f"chat created at:{chatcrtime}"
+            cursor=conn.cursor()
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS chats(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            chatname TEXT,
+            date DATETIME DEFAULT CURRENT_TIMESTAMP
             )
-
-            chatbox=BoxLayout(
-                orientation="vertical",
-                size_hint=(1,None),
-                height=190,
-                padding=(20,15,20,25)
-            )
-
-            with chatbox.canvas.after:
-                Color(0.5,0.5,0.5,0.4)
-                chatdivider=Line(width=1.5)
-
-            def update_divider(
-                instance,
-                value,
-                divider=chatdivider
-            ):
-                line_y=instance.y
-                divider.points=[
-                    instance.x+instance.width*0.02,
-                    line_y,
-                    instance.x+instance.width*0.98,
-                    line_y
-                ]
-
-            chatbox.bind(
-                pos=update_divider,
-                size=update_divider
-            )
-
-            chatb=Button(
-                text=f"{chatname}\n[color=bebebe]{chatcrtime}[/color]",
-                size_hint=(1,1),
-                background_normal="",
-                background_down="",
-                background_color=(0,0,0,0),
-                color=(1,1,1,1),
-                halign="left",
-                valign="middle",
-                text_size=(None,None),
-                font_name="Vazirmatn-Light.ttf",
-                font_size=42,
-                markup=True
-            )
-
-            with chatb.canvas.before:
-                Color(30/255,42/255,86/255,0.8)
-
-                chatbg=RoundedRectangle(
-                    pos=chatb.pos,
-                    size=chatb.size,
-                    radius=[30]
+            """)
+            conn.commit()
+            cursor.execute("""
+            SELECT id,chatname,date FROM chats
+            ORDER BY id
+            """)
+            chatslist=cursor.fetchall()
+            for chatid,chatname,chatcrtime in chatslist:
+                print(
+                    f"chat {chatid}\n"
+                    f"-------------\n"
+                    f"chat id:{chatid}\n"
+                    f"chat name={chatname}\n"
+                    f"chat created at:{chatcrtime}"
                 )
-
-                Color(0.5,0.5,0.5,1)
-
-                chatborder=Line(
-                    rounded_rectangle=(
-                        chatb.x,
-                        chatb.y,
-                        chatb.width,
-                        chatb.height,
+                chatbox=BoxLayout(
+                    orientation="vertical",
+                    size_hint=(1,None),
+                    height=190,
+                    padding=(20,15,20,25)
+                )
+                with chatbox.canvas.after:
+                    Color(0.5,0.5,0.5,0.4)
+                    chatdivider=Line(width=1.5)
+                def update_divider(
+                    instance,
+                    value,
+                    divider=chatdivider
+                ):
+                    line_y=instance.y
+                    divider.points=[
+                        instance.x+instance.width*0.02,
+                        line_y,
+                        instance.x+instance.width*0.98,
+                        line_y
+                    ]
+                chatbox.bind(
+                    pos=update_divider,
+                    size=update_divider
+                )
+                chatb=Button(
+                    text=f"{chatname}\n[color=bebebe]{chatcrtime}[/color]",
+                    size_hint=(1,1),
+                    background_normal="",
+                    background_down="",
+                    background_color=(0,0,0,0),
+                    color=(1,1,1,1),
+                    halign="left",
+                    valign="middle",
+                    text_size=(None,None),
+                    font_name="Vazirmatn-Light.ttf",
+                    font_size=42,
+                    markup=True
+                )
+                with chatb.canvas.before:
+                    Color(30/255,42/255,86/255,0.8)
+                    chatbg=RoundedRectangle(
+                        pos=chatb.pos,
+                        size=chatb.size,
+                        radius=[30]
+                    )
+                    Color(0.5,0.5,0.5,1)
+                    chatborder=Line(
+                        rounded_rectangle=(
+                            chatb.x,
+                            chatb.y,
+                            chatb.width,
+                            chatb.height,
+                            30
+                        ),
+                        width=1.5
+                    )
+                def update_chat(
+                    instance,
+                    value,
+                    bg=chatbg,
+                    border=chatborder
+                ):
+                    bg.pos=instance.pos
+                    bg.size=instance.size
+                    border.rounded_rectangle=(
+                        instance.x,
+                        instance.y,
+                        instance.width,
+                        instance.height,
                         30
-                    ),
-                    width=1.5
+                    )
+                    instance.text_size=(
+                        instance.width-30,
+                        instance.height-20
+                    )
+
+                chatb.bind(
+                    pos=update_chat,
+                    size=update_chat
+                )
+                chatb.bind(
+                    on_press=partial(showchat,chatid)
                 )
 
-            def update_chat(
-                instance,
-                value,
-                bg=chatbg,
-                border=chatborder
-            ):
-                bg.pos=instance.pos
-                bg.size=instance.size
-
-                border.rounded_rectangle=(
-                    instance.x,
-                    instance.y,
-                    instance.width,
-                    instance.height,
-                    30
-                )
-
-                instance.text_size=(
-                    instance.width-30,
-                    instance.height-20
-                )
-
-            chatb.bind(
-                pos=update_chat,
-                size=update_chat
-            )
-
-            chatb.bind(
-                on_press=partial(showchat,chatid)
-            )
-
-            chatbox.add_widget(chatb)
-            sidebar.layout.add_widget(chatbox)
+                chatbox.add_widget(chatb)
+                sidebar.layout.add_widget(chatbox)
             conn.close()
             self.add_widget(overlay)
             overlay.disabled=False
