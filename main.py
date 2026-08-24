@@ -29,6 +29,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.graphics import Color,Line
 from kivy.uix.image import Image
+from openai import OpenAI
 import arabic_reshaper
 from bidi.algorithm import get_display
 from kivy.animation import Animation
@@ -711,13 +712,19 @@ class screen(FloatLayout):
 
         sidebar.layout.add_widget(modelsettings)
         sidebar.layout.add_widget(modelswi)
-        sidebar.layout.add_widget(urltextbar)
         sidebar.layout.add_widget(roleplayp)
         sidebar.layout.add_widget(cchl)
 
         conn=sqlite3.connect("database.db")
         cursor=conn.cursor()
-
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS chats(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        chatname TEXT,
+        date DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+        conn.commit()
         cursor.execute("""
         SELECT id,chatname,date FROM chats
         ORDER BY id
