@@ -9,7 +9,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,db
 
 version = 0.1
 
-requirements = python3,kivy,requests,pyjnius,python-bidi,arabic-reshaper,openai
+requirements = python3,kivy,requests,pyjnius,python-bidi,arabic-reshaper,openai,httpx2
 
 icon.filename = icon.png
 
