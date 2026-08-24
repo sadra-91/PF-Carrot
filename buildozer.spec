@@ -9,8 +9,7 @@ source.include_exts = py,png,jpg,kv,atlas,ttf,db
 
 version = 0.1
 
-requirements = python3,kivy,requests,pyjnius,python-bidi,arabic-reshaper,openai,anyio,distro,httpx2,jiter,pydantic,sniffio,tqdm,typing-extensions,pydantic-core
-
+requirements = python3,kivy,requests,pyjnius,python-bidi,arabic-reshaper
 icon.filename = icon.png
 
 orientation = portrait
