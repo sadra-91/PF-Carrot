@@ -705,7 +705,30 @@ class screen(FloatLayout):
         sidebar.layout.add_widget(modelswi)
         sidebar.layout.add_widget(cchl)
 
-        conn=sqlite3.connect("database.db")
+        
+        modelsettings.bind(
+            size=lambda instance, value:
+            setattr(
+                instance,
+                "text_size",
+                (instance.width - 20, instance.height)
+            )
+        )
+
+        def hidesb(instance):
+            Animation(opacity=0,d=0.25).start(overlay)
+            self.remove_widget(overlay)
+            Animation(x=-sidebar.width,d=0.5,t="out_quart").start(sidebar)
+            Clock.schedule_once(
+                lambda dt:setattr(overlay,"disabled",True),
+                0.25
+            )
+            self.remove_widget(sidebar)
+
+        overlay.bind(on_press=hidesb)
+
+        def showsb(instance):
+            conn=sqlite3.connect("database.db")
         cursor=conn.cursor()
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS chats(
@@ -831,31 +854,7 @@ class screen(FloatLayout):
 
             chatbox.add_widget(chatb)
             sidebar.layout.add_widget(chatbox)
-
-        conn.close()
-
-        modelsettings.bind(
-            size=lambda instance, value:
-            setattr(
-                instance,
-                "text_size",
-                (instance.width - 20, instance.height)
-            )
-        )
-
-        def hidesb(instance):
-            Animation(opacity=0,d=0.25).start(overlay)
-            self.remove_widget(overlay)
-            Animation(x=-sidebar.width,d=0.5,t="out_quart").start(sidebar)
-            Clock.schedule_once(
-                lambda dt:setattr(overlay,"disabled",True),
-                0.25
-            )
-            self.remove_widget(sidebar)
-
-        overlay.bind(on_press=hidesb)
-
-        def showsb(instance):
+            conn.close()
             self.add_widget(overlay)
             overlay.disabled=False
             Animation(opacity=1,d=0.2).start(overlay)
