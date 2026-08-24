@@ -162,7 +162,7 @@ class aianswer(Thread):
         "role":"user",
         "content":self.message
         })
-        self.url="https://api.gapgpt.app/v1"
+        self.url="https://api.gapgpt.app/v1/chat/completions"
         self.headers={
             "Authorization":f"Bearer {apikey}",
             "Content-Type":"application/json"
@@ -181,6 +181,7 @@ class aianswer(Thread):
                 stream=True,
                 timeout=120
             )
+            response.raise_for_status()
             answer=""
 
             for line in response.iter_lines(decode_unicode=True):
