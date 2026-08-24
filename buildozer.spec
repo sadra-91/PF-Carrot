@@ -5,11 +5,12 @@ package.name = pfcarrot
 package.domain = org.test
 
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas,ttf,db
+source.include_exts = py,png,jpg,jpeg,kv,atlas,ttf,db,json
 
 version = 0.1
 
-requirements = python3,kivy,requests,pyjnius,python-bidi,arabic-reshaper
+requirements = python3,kivy==2.3.1,requests,pyjnius,python-bidi,arabic-reshaper
+
 icon.filename = icon.png
 
 orientation = portrait
@@ -20,7 +21,7 @@ android.permissions = INTERNET
 android.api = 34
 android.minapi = 24
 
-android.archs = armeabi-v7a
+android.archs = arm64-v8a
 
 android.accept_sdk_license = True
 android.allow_backup = True
