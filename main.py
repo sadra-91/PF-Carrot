@@ -528,31 +528,6 @@ class screen(FloatLayout):
             modelswi.add_widget(btn)
 
 
-        roleplayp=Button(
-            text="Role play",
-            size_hint=(1, None),
-            height=60,
-            background_normal="",
-            background_down="",
-            background_color=(0, 0, 0, 0),
-            color=(1, 1, 1, 1),
-            halign="left",
-            valign="middle",
-            text_size=(0, None),
-            font_name="calibri.ttf",
-            font_size=64,
-            x=modelsettings.x,
-            y=modelsettings.y+40
-        )
-
-        roleplayp.bind(
-            size=lambda instance, value:
-            setattr(
-                instance,
-                "text_size",
-                (instance.width - 20, instance.height)
-            )
-        )
 
         def showchat(chatid,instance):
             if self.firstmessage:
@@ -712,7 +687,6 @@ class screen(FloatLayout):
 
         sidebar.layout.add_widget(modelsettings)
         sidebar.layout.add_widget(modelswi)
-        sidebar.layout.add_widget(roleplayp)
         sidebar.layout.add_widget(cchl)
 
         conn=sqlite3.connect("database.db")
