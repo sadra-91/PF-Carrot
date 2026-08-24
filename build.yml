@@ -7,6 +7,12 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    env:
+      ANDROID_API_LEVEL: 34
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+      JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-8/x64
+      BUILDOZER_WARN_ON_ROOT: 0
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
