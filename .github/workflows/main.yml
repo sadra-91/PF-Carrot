@@ -10,6 +10,13 @@ jobs:
   build:
     runs-on: ubuntu-22.04
 
+    env:
+      ANDROID_API_LEVEL: 34
+      ANDROID_HOME: /usr/local/lib/android/sdk
+      ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
+      JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.20-8/x64
+      BUILDOZER_WARN_ON_ROOT: 0
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -25,30 +32,56 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
           sudo apt-get update
+
           sudo apt-get install -y \
-            git zip unzip openjdk-17-jdk \
-            python3-pip autoconf automake libtool \
-            pkg-config zlib1g-dev libncurses-dev \
-            libffi-dev libssl-dev cmake \
-            build-essential ccache
+            git \
+            zip \
+            unzip \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            zlib1g-dev \
+            libncurses-dev \
+            libffi-dev \
+            libssl-dev \
+            cmake \
+            build-essential \
+            ccache
+
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip==24.3.1
+
+      - name: Install Cython
+        run: |
+          pip install Cython==0.29.36
 
       - name: Install Buildozer
         run: |
-          python -m pip install --upgrade pip
-          pip install Cython==0.29.36
-          pip install buildozer
+          pip install buildozer==1.6.0
+
+      - name: Show build environment
+        run: |
+          echo "ANDROID_API_LEVEL=$ANDROID_API_LEVEL"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          echo "JAVA_HOME=$JAVA_HOME"
+          python --version
+          pip --version
+          buildozer --version
 
       - name: Accept Android SDK licenses
         run: |
           mkdir -p ~/.android
-          echo "24333f8a63b6825ea9c5514f83c2829b004d1fee" > ~/.android/repositories.cfg || true
+          touch ~/.android/repositories.cfg
+
+          yes | sdkmanager --licenses || true
 
       - name: Build APK
-        env:
-          BUILDOZER_WARN_ON_ROOT: 0
         run: |
           buildozer android debug
 
@@ -56,5 +89,6 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: APK
+          name: PF-Carrot-APK
           path: bin/*.apk
+          if-no-files-found: error
