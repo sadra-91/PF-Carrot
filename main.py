@@ -29,7 +29,6 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.graphics import Color,Line
 from kivy.uix.image import Image
-from openai import OpenAI
 import arabic_reshaper
 from bidi.algorithm import get_display
 from kivy.animation import Animation
@@ -45,7 +44,6 @@ lastmodel=""
 print("start")
 print("start566")
 apikey=requests.get("https://pf-c.ir/key.txt").text.strip()
-client = OpenAI(base_url="https://api.gapgpt.app/v1",api_key=apikey)
 
 @run_on_ui_thread
 def set_system_bars(dt):
@@ -164,27 +162,44 @@ class aianswer(Thread):
         "role":"user",
         "content":self.message
         })
-
+        self.url="https://api.gapgpt.app/v1"
+        self.headers={
+            "Authorization":f"Bearer {apikey}",
+            "Content-Type":"application/json"
+        }
+        self.data={
+            "model":currentmodel,
+            "messages":self.messages,
+            "stream":True
+        }
     def run(self):
         try:
-            response=client.chat.completions.create(
-                model=currentmodel,
-                messages=self.messages,
-                stream=True
+            response=requests.post(
+                self.url,
+                headers=self.headers,
+                json=self.data,
+                stream=True,
+                timeout=120
             )
             answer=""
 
-            for chunk in response:
-                if not chunk.choices:
+            for line in response.iter_lines(decode_unicode=True):
+                if not line:
                     continue
+                if line.startswith("data: "):
+                    chunk = line[6:]
+                    if chunk == "[DONE]":
+                        break
 
-                content = chunk.choices[0].delta.content
+                    data=json.loads(chunk)
 
-                if content:
-                    answer += content
-                    Clock.schedule_once(
-                        lambda dt, text=answer: self.streamf(text)
-                    )
+                    content=data["choices"][0]["delta"].get("content")
+                
+                    if content:
+                        answer += content
+                        Clock.schedule_once(
+                            lambda dt, text=answer: self.streamf(text)
+                        )
 
             history.append(f"user:{self.message}")
             history.append(f"assistant:{answer}")
